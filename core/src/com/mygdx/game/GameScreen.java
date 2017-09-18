@@ -9,7 +9,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import pnpMap.PnpMap;
 import pnpMap.PnpObject;
 import pnpMap.PnpTile;
@@ -20,9 +25,11 @@ import java.util.Iterator;
 public class GameScreen extends ScreenAdapter implements InputProcessor {
     private MyGdxGame game;
     private GameStage stage;
+    private Skin skin;
+    private Table uiTable;
 
     private OrthographicCamera camera;
-    private ExtendViewport viewport;
+    private ScreenViewport viewport;
 
     public final static float SCALE = 32f;
     public final static float INV_SCALE = 1.f / SCALE;
@@ -41,27 +48,40 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public SpriteBatch testBatch;
     public SpriteBatch tileBatch;
     public SpriteBatch objectBatch;
-    public Vector3 touchPos;
 
     public GameScreen(MyGdxGame game) {
         this.game = game;
         this.camera = new OrthographicCamera();
-        this.viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
+
+        //this.viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera); OLD
+        this.viewport = new ScreenViewport(this.camera);
+
+        this.skin = new Skin(Gdx.files.internal("core/assets/cloud-form/skin/cloud-form-ui.json"));
+
         this.stage = new GameStage(this.viewport);
+        this.uiTable = new Table();
+        this.uiTable.setFillParent(true);
+        this.stage.addActor(this.uiTable);
+
         this.globalCoord = new Point(0, 0);
+
         this.map = new PnpMap(50, 50);
         this.selectedTilePoint = new Point(0, 0);
+
         testBatch = new SpriteBatch();
         tileBatch = new SpriteBatch();
         objectBatch = new SpriteBatch();
+
         Gdx.input.setInputProcessor(this);
 
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         this.camera.update();
+
         if (redraw) {
 
             System.out.println(this.camera.position);
@@ -96,6 +116,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
         objectBatch.end();
 
+        this.stage.draw();
+
     }
 
     boolean dragging;
@@ -109,7 +131,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
+        System.out.println("clicked");
         int iScreenY = Gdx.graphics.getHeight() - screenY;
 
         if (button != Input.Buttons.LEFT || pointer > 0) return false;
@@ -120,26 +142,37 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             PnpTile tile = this.map.getTile(tilePoint.x, tilePoint.y);
 
             if (!this.tileSelected) {
-                //System.out.println("tile selected " + tilePoint);
+
                 this.selectedTilePoint = tilePoint;
                 this.tileSelected = true;
-                /*Table table = new Table();
-                table.setPosition(screenX, screenY);
-                table.add(new Actor());
-                table.setVisible(true);
-                this.stage.addActor(table);*/
+
+                this.camera.position.set(Gdx.graphics.getWidth() - screenX, screenY, 0); // why does this work?
+                if (!tile.objectList.isEmpty()) {
+                    Iterator<PnpObject> objectList = tile.objectList.iterator();
+                    while (objectList.hasNext()) {
+                        PnpObject object = objectList.next();
+                        TextButton btn = new TextButton(object.name, skin);
+                        this.uiTable.add(btn).pad(10).fillY().align(Align.top);;
+                    }
+                }
+
+
+
             } else {
                 //System.out.println("new tile");
-                PnpTile selectedTile = this.map.getTile(this.selectedTilePoint);
+                if (this.selectedTilePoint != tilePoint) {
+                    PnpTile selectedTile = this.map.getTile(this.selectedTilePoint);
 
-                if (!selectedTile.objectList.isEmpty()) {
-                    //System.out.println("moving object to " + tilePoint);
-                    PnpObject object = selectedTile.objectList.get(0); // ADD ITERATOR TO SHOW LIST
-                    tile.objectList.add(object);
-                    selectedTile.objectList.remove(object);
+                    if (!selectedTile.objectList.isEmpty()) {
 
+                        PnpObject object = selectedTile.objectList.get(0);
+                        tile.objectList.add(object);
+                        selectedTile.objectList.remove(object);
+
+                    }
                 }
                 this.tileSelected = false;
+                this.uiTable.reset();
 
             }
         } else {
@@ -169,14 +202,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public boolean keyDown(int keycode) {
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            camera.translate(-1, 0, 0);
+            //camera.translate(-1, 0, 0);
             System.out.println("left");
             this.redraw = true;
             this.globalCoord.x--;
             return true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            camera.translate(1, 0, 0);
+            //camera.translate(1, 0, 0);
             System.out.println("right, campos: " + camera.position);
             this.redraw = true;
             this.globalCoord.x++;
@@ -184,10 +217,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            camera.translate(0, -1, 0);
+            //camera.translate(0, -1, 0);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            camera.translate(0, 1, 0);
+            //camera.translate(0, 1, 0);
         }
         //System.out.println("input handle");
         return false;
@@ -203,11 +236,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public void dispose() {
         // disposable stuff must be disposed
         //shapes.dispose();
+        super.dispose();
         this.testBatch.dispose();
         this.tileBatch.dispose();
         this.map.dispose();
         this.texture.dispose();
-
+        this.stage.dispose();
+        this.skin.dispose();
     }
 
 

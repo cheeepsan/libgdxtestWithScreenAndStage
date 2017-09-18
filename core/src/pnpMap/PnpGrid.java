@@ -16,10 +16,17 @@ public class PnpGrid {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 PnpTile tile = new PnpTile(i, j);
-                if (i == 0 && j == 0) {
-                    System.out.println(tile.x + " " + tile.y);
-                    PnpObject object = new PnpObject();
+                if (i % 13 == 0 ) {
+
+                    PnpObject object = new PnpObject("test " + i + " by " + j);
+                    PnpObject object1 = new PnpObject("test1 " + i + " by " + j);
+                    PnpObject object2 = new PnpObject("test2 " + i + " by " + j);
+                    PnpObject object3 = new PnpObject("test3 " + i + " by " + j);
                     tile.objectList.add(object);
+                    tile.objectList.add(object1);
+                    tile.objectList.add(object2);
+                    tile.objectList.add(object3);
+
                 }
                 gridMap.put(new Point(i, j), tile);
             }

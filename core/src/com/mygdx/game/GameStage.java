@@ -26,7 +26,7 @@ public class GameStage extends Stage {
 
     @Override
     public void draw() {
-        System.out.println("draw");
+        //System.out.println("draw");
         super.draw();
     }
 }
