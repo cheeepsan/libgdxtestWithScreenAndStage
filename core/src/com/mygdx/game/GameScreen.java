@@ -9,9 +9,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -58,8 +60,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         this.skin = new Skin(Gdx.files.internal("core/assets/cloud-form/skin/cloud-form-ui.json"));
 
-        this.stage = new GameStage(this.viewport);
+        this.stage = new GameStage(this.viewport, this, this.game);
         this.uiTable = new Table();
+
         this.uiTable.setFillParent(true);
         this.stage.addActor(this.uiTable);
 
@@ -131,7 +134,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("clicked");
+        //System.out.println("clicked");
         int iScreenY = Gdx.graphics.getHeight() - screenY;
 
         if (button != Input.Buttons.LEFT || pointer > 0) return false;
@@ -147,12 +150,28 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 this.tileSelected = true;
 
                 this.camera.position.set(Gdx.graphics.getWidth() - screenX, screenY, 0); // why does this work?
+
                 if (!tile.objectList.isEmpty()) {
                     Iterator<PnpObject> objectList = tile.objectList.iterator();
                     while (objectList.hasNext()) {
                         PnpObject object = objectList.next();
                         TextButton btn = new TextButton(object.name, skin);
-                        this.uiTable.add(btn).pad(10).fillY().align(Align.top);;
+                        btn.add(object);
+                        btn.addListener(new ChangeListener() {
+                            @Override
+                            public void changed(ChangeEvent event, Actor actor) {
+
+                                //System.out.println("Selected: " + actor.);
+                                //GameStage stage = (GameStage)actor.getParent().getStage();
+
+
+
+                            }
+                        });
+
+                        this.uiTable.add(btn).width(100).padTop(0).uniform();
+                        this.uiTable.row();
+                        Gdx.input.setInputProcessor(this.stage);
                     }
                 }
 
