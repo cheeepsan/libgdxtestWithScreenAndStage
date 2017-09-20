@@ -10,6 +10,7 @@ public class PnpTile {
     public Texture texture;
     public int x, y;
     public String type;
+    public boolean canGo = true;
     public enum Type {
         WATER, GROUND
     }
@@ -20,6 +21,9 @@ public class PnpTile {
 
     public PnpTile(int x, int y) {
         this.type = type;
+        if (this.type == "WATER") {
+            this.canGo = false;
+        }
         this.objectList = new ArrayList<PnpObject>();
         if (x % 2 == 0) {
             this.texture = new Texture("core/assets/testSprite.png");

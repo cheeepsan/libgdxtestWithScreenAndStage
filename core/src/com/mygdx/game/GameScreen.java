@@ -41,9 +41,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     public Point globalCoord;
     public Point selectedTilePoint;
+    public PnpObject seleectedPnpObject;
     public PnpMap map;
     public boolean redraw = true;
     public boolean tileSelected = false;
+    public boolean pnpObjectSelected = false;
 
 
     public Texture texture;
@@ -156,18 +158,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                     while (objectList.hasNext()) {
                         PnpObject object = objectList.next();
                         TextButton btn = new TextButton(object.name, skin);
-                        btn.add(object);
-                        btn.addListener(new ChangeListener() {
-                            @Override
-                            public void changed(ChangeEvent event, Actor actor) {
+                        this.stage.addButtonListenerWithObject(btn, object);
 
-                                //System.out.println("Selected: " + actor.);
-                                //GameStage stage = (GameStage)actor.getParent().getStage();
-
-
-
-                            }
-                        });
 
                         this.uiTable.add(btn).width(100).padTop(0).uniform();
                         this.uiTable.row();
@@ -176,22 +168,20 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 }
 
 
-
             } else {
-                //System.out.println("new tile");
+
                 if (this.selectedTilePoint != tilePoint) {
                     PnpTile selectedTile = this.map.getTile(this.selectedTilePoint);
 
-                    if (!selectedTile.objectList.isEmpty()) {
+                    if (!selectedTile.objectList.isEmpty() && this.pnpObjectSelected && selectedTile.objectList.contains(this.seleectedPnpObject)) {
 
-                        PnpObject object = selectedTile.objectList.get(0);
-                        tile.objectList.add(object);
-                        selectedTile.objectList.remove(object);
+                        tile.objectList.add(this.seleectedPnpObject);
+                        selectedTile.objectList.remove(this.seleectedPnpObject);
+                        this.pnpObjectSelected = false;
 
                     }
                 }
                 this.tileSelected = false;
-                this.uiTable.reset();
 
             }
         } else {
@@ -200,6 +190,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         //System.out.println(tile.x + " " + tile.y);
         dragging = true;
         return true;
+    }
+
+    public void resetUiTable() {
+        this.uiTable.reset();
     }
 
     @Override
