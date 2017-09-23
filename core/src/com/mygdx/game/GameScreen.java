@@ -87,7 +87,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.camera.update();
 
         if (redraw) {
-
             System.out.println(this.camera.position);
             this.redraw = false;
         }
@@ -95,7 +94,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         testBatch.begin();
         for (int i = 0; i < this.VP_WIDTH; i++) {
             for (int j = 0; j < this.VP_HEIGHT; j++) {
-                Point tilePoint = new Point((int) this.globalCoord.x + i, (int) this.globalCoord.y + j);
+                Point tilePoint = new Point(this.globalCoord.x + i, this.globalCoord.y + j);
                 if (this.map.getGrid().hasTile(tilePoint)) {
                     testBatch.draw(this.map.getGrid().getTile((int) tilePoint.getX(), (int) tilePoint.getY()).texture, i * SCALE, j * SCALE);
                 }
@@ -105,15 +104,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         objectBatch.begin();
         for (int i = 0; i < this.VP_WIDTH; i++) {
             for (int j = 0; j < this.VP_HEIGHT; j++) {
-                Point tilePoint = new Point((int) this.globalCoord.x + i, (int) this.globalCoord.y + j);
+                Point tilePoint = new Point(this.globalCoord.x + i, this.globalCoord.y + j);
                 if (this.map.getGrid().hasTile(tilePoint)) {
                     PnpTile tile = this.map.getTile(tilePoint);
                     Iterator<PnpObject> objectIterator = tile.objectList.iterator();
-                    //int x = 0;
                     while (objectIterator.hasNext()) {
-                        //System.out.println(x);
                         objectBatch.draw(objectIterator.next().texture, i * SCALE, j * SCALE);
-                        //x++;
                     }
                 }
             }
@@ -136,7 +132,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         //System.out.println("clicked");
-        int iScreenY = Gdx.graphics.getHeight() - screenY;
+        int screenWidht = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+        int iScreenY = screenHeight - screenY;
 
         if (button != Input.Buttons.LEFT || pointer > 0) return false;
 
@@ -150,7 +148,20 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 this.selectedTilePoint = tilePoint;
                 this.tileSelected = true;
 
-                this.camera.position.set(Gdx.graphics.getWidth() - screenX, screenY, 0); // why does this work?
+                if ((screenY + 64 > screenHeight) && screenX - 64 < 0) { //leftBottom
+                    this.camera.position.set(Gdx.graphics.getWidth() - screenX - 32, screenY - 32, 0);
+                } else if (screenX - 64 < 0 ||  (screenY - 64 < 0 && screenX - 64 < 0)) { //LeftTop || left
+                    this.camera.position.set( Gdx.graphics.getWidth() - screenX - 64, screenY + 32, 0);
+                } else if (screenY - 64 < 0 && screenX + 64 > screenWidht) { //rightTop
+                    this.camera.position.set(Gdx.graphics.getWidth() - screenX + 64, screenY + 32, 0);
+                } else if ((screenY + 64 > screenHeight) && (screenX + 64 > screenWidht)) { //rightBottom
+                    this.camera.position.set(Gdx.graphics.getWidth() - screenX + 64, screenY - 32, 0);
+                } else if ((screenX + 64 > screenWidht)) { // Right
+                    this.camera.position.set(Gdx.graphics.getWidth() - screenX + 64, screenY, 0);
+                } else {
+                    this.camera.position.set(Gdx.graphics.getWidth() - screenX - 32, screenY - 32, 0);
+                }
+
 
                 if (!tile.objectList.isEmpty()) {
                     Iterator<PnpObject> objectList = tile.objectList.iterator();
@@ -215,14 +226,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             //camera.translate(-1, 0, 0);
-            System.out.println("left");
+            //System.out.println("left");
             this.redraw = true;
             this.globalCoord.x--;
             return true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             //camera.translate(1, 0, 0);
-            System.out.println("right, campos: " + camera.position);
+            //System.out.println("right, campos: " + camera.position);
             this.redraw = true;
             this.globalCoord.x++;
             return true;
@@ -230,9 +241,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             //camera.translate(0, -1, 0);
+            this.globalCoord.y--;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             //camera.translate(0, 1, 0);
+            this.globalCoord.y++;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -255,6 +268,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public void resize(int width, int height) {
         // viewport must be updated for it to work properly
         viewport.update(width, height, true);
+        this.testBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+        this.tileBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+        this.objectBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
     }
 
     @Override
@@ -283,6 +299,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean scrolled(int amount) {
+
         return false;
     }
 }
