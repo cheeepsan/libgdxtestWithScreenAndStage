@@ -2,50 +2,62 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import pnpMap.PnpMap;
-import pnpMap.PnpObject;
-
-import java.awt.Point;
+import pnpObject.PnpObject;
 
 
 public class GameStage extends Stage {
 
     private GameScreen screen;
     private Game game;
+    //private Camera camera;
     public GameStage() {
 
     }
     public GameStage(Viewport viewport, GameScreen screen, Game game) {
         this.screen = screen;
         this.game = game;
+        //this.camera = this.getViewport().getCamera();
         super.setViewport(viewport);
 
     }
 
     @Override
     public void draw() {
+
         super.draw();
+
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        //System.out.println(this.getWidth() + "   " + this.getHeight() + ", " + screenX);
-
-        //Gdx.input.setInputProcessor(this.screen);
         return true;
+    }
+    @Override
+    public boolean keyDown(int keycode) {
+        /*
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+
+            camera.translate(0, 1, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            camera.translate(0, -1, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            camera.translate(1, 0, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            camera.translate(-1, 0, 0);
+        }*/
+        //System.out.println("input handle");
+        return false;
     }
     public void addButtonListener(TextButton button) {
 

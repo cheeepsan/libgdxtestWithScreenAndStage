@@ -3,8 +3,13 @@ package pnpMap;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapLayer;
+import pnpObject.PnpObject;
+import pnpObject.PnpObjectProvider;
 
+import javax.sql.rowset.spi.XmlReader;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class PnpMap extends Map {
     private PnpGrid grid;
@@ -14,23 +19,29 @@ public class PnpMap extends Map {
     public PnpMap(int width, int height) {
         this.width = width;
         this.height = height;
-        grid = new PnpGrid(width, height);
+        this.createGrid();
+        this.initElemts();
 
     }
-
-    public void drawGrid() {
-        //this.grid.grid(this.width, this.height);
+    public void createGrid() {
+       this.grid = new PnpGrid(width, height);
     }
-    /*public ImmediateModeRenderer20 getLineRenderer() {
-        return this.grid.getLineRenderer();
-    }*/
-
     public void createGridLayer() {
         this.gridLayer = new MapLayer();
         super.getLayers().add(gridLayer);
 
     }
-
+    public void initElemts() {
+        PnpObjectProvider p = new PnpObjectProvider();
+        //Add units
+        ArrayList<PnpObject> units = p.getObjects("unit");
+        //Add items
+        //ArrayList<PnpObject> items = p.getObjects("item");
+        Iterator<PnpObject> iterator = units.iterator();
+        while (iterator.hasNext()) {
+            this.grid.addObject(new Point(0,0), iterator.next());
+        }
+    }
     public PnpGrid getGrid() {
         return grid;
     }

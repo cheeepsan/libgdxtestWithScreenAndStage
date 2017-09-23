@@ -1,6 +1,6 @@
 package pnpMap;
 
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import pnpObject.PnpObject;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -8,30 +8,37 @@ import java.util.HashMap;
 
 public class PnpGrid {
     public HashMap<Point, PnpTile> gridMap;
-
+    private int width, height;
 
     public PnpGrid(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.gridMap = new HashMap<Point, PnpTile>();
+        this.fillGrid();
 
-        gridMap = new HashMap<Point, PnpTile>();
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+    }
+    public void fillGrid() {
+        for (int i = 0; i < this.width; i++) {
+            for (int j = 0; j < this.height; j++) {
                 PnpTile tile = new PnpTile(i, j);
-                if (i % 13 == 0 ) {
+                //if (i % 13 == 0 ) {
 
-                    PnpObject object = new PnpObject("test " + i + " by " + j);
-                    PnpObject object1 = new PnpObject("test1 " + i + " by " + j);
-                    PnpObject object2 = new PnpObject("test2 " + i + " by " + j);
-                    PnpObject object3 = new PnpObject("test3 " + i + " by " + j);
-                    tile.objectList.add(object);
-                    tile.objectList.add(object1);
-                    tile.objectList.add(object2);
-                    tile.objectList.add(object3);
+                    //PnpObject object = new PnpObject("test " + i + " by " + j);
+                    //tile.objectList.add(object);
 
-                }
-                gridMap.put(new Point(i, j), tile);
+                //}
+                this.gridMap.put(new Point(i, j), tile);
             }
         }
+    }
+    public void addTile(Point point, PnpTile tile) {
+        this.gridMap.put(point, tile);
+    }
 
+    public void addObject(Point point, PnpObject object) {
+        PnpTile tile = this.getTile(point);
+        tile.addObject(object);
+        this.gridMap.put(point, tile);
     }
 
     public PnpTile getTile(int x, int y) {

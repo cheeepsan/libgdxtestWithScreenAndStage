@@ -1,0 +1,14 @@
+{
+  "units": [
+    {
+      "name": "name",
+      "hp": "10",
+      "attack": "1"
+    },
+    {
+      "name": "name1",
+      "hp": "20",
+      "attack": "3"
+    }
+  ]
+}

@@ -8,18 +8,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import pnpMap.PnpMap;
-import pnpMap.PnpObject;
+import pnpObject.PnpObject;
 import pnpMap.PnpTile;
+import pnpObject.PnpObjectProvider;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -78,6 +74,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         objectBatch = new SpriteBatch();
 
         Gdx.input.setInputProcessor(this);
+
+
+
 
     }
 
@@ -234,6 +233,19 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             //camera.translate(0, 1, 0);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            camera.translate(0, 1, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            camera.translate(0, -1, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            camera.translate(1, 0, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            camera.translate(-1, 0, 0);
         }
         //System.out.println("input handle");
         return false;
