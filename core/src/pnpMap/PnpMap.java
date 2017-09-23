@@ -15,16 +15,16 @@ public class PnpMap extends Map {
     private PnpGrid grid;
     private MapLayer gridLayer;
     private int width, height = 0;
+    public boolean generated = false;
 
     public PnpMap(int width, int height) {
         this.width = width;
         this.height = height;
-        this.createGrid();
-        this.initElemts();
-
     }
     public void createGrid() {
        this.grid = new PnpGrid(width, height);
+       this.grid.setMap(this);
+       this.grid.generate();
     }
     public void createGridLayer() {
         this.gridLayer = new MapLayer();

@@ -1,0 +1,13 @@
+{
+  "tiles": [
+    {
+      "type": "water"
+    },
+    {
+      "type": "grass"
+    },
+    {
+      "type": "dirt"
+    }
+  ]
+}

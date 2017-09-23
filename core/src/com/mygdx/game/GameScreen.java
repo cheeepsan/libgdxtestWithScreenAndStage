@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -15,7 +16,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import pnpMap.PnpMap;
 import pnpObject.PnpObject;
 import pnpMap.PnpTile;
-import pnpObject.PnpObjectProvider;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -45,10 +45,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
 
     public Texture texture;
-    public SpriteBatch testBatch;
+    public SpriteBatch miscBatch;
     public SpriteBatch tileBatch;
     public SpriteBatch objectBatch;
-
+    public ShapeRenderer shapeRenderer;
     public GameScreen(MyGdxGame game) {
         this.game = game;
         this.camera = new OrthographicCamera();
@@ -66,15 +66,18 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         this.globalCoord = new Point(0, 0);
 
-        this.map = new PnpMap(50, 50);
+        this.map = new PnpMap(100, 100);
+        this.map.createGrid();
+        this.map.initElemts();
+
         this.selectedTilePoint = new Point(0, 0);
 
-        testBatch = new SpriteBatch();
+        miscBatch = new SpriteBatch();
         tileBatch = new SpriteBatch();
         objectBatch = new SpriteBatch();
 
         Gdx.input.setInputProcessor(this);
-
+        this.shapeRenderer = new ShapeRenderer();
 
 
 
@@ -82,42 +85,55 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (this.map.generated) {
 
-        this.camera.update();
 
-        if (redraw) {
-            System.out.println(this.camera.position);
-            this.redraw = false;
-        }
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        testBatch.begin();
-        for (int i = 0; i < this.VP_WIDTH; i++) {
-            for (int j = 0; j < this.VP_HEIGHT; j++) {
-                Point tilePoint = new Point(this.globalCoord.x + i, this.globalCoord.y + j);
-                if (this.map.getGrid().hasTile(tilePoint)) {
-                    testBatch.draw(this.map.getGrid().getTile((int) tilePoint.getX(), (int) tilePoint.getY()).texture, i * SCALE, j * SCALE);
-                }
+            this.camera.update();
+
+            if (redraw) {
+                System.out.println(this.camera.position);
+                this.redraw = false;
             }
-        }
-        testBatch.end();
-        objectBatch.begin();
-        for (int i = 0; i < this.VP_WIDTH; i++) {
-            for (int j = 0; j < this.VP_HEIGHT; j++) {
-                Point tilePoint = new Point(this.globalCoord.x + i, this.globalCoord.y + j);
-                if (this.map.getGrid().hasTile(tilePoint)) {
-                    PnpTile tile = this.map.getTile(tilePoint);
-                    Iterator<PnpObject> objectIterator = tile.objectList.iterator();
-                    while (objectIterator.hasNext()) {
-                        objectBatch.draw(objectIterator.next().texture, i * SCALE, j * SCALE);
+
+            tileBatch.begin();
+            for (int i = 0; i < this.VP_WIDTH; i++) {
+                for (int j = 0; j < this.VP_HEIGHT; j++) {
+                    Point tilePoint = new Point(this.globalCoord.x + i, this.globalCoord.y + j);
+                    if (this.map.getGrid().hasTile(tilePoint)) {
+                        tileBatch.draw(this.map.getGrid().getTile((int) tilePoint.getX(), (int) tilePoint.getY()).texture, i * SCALE, j * SCALE);
                     }
                 }
             }
+            tileBatch.end();
+            objectBatch.begin();
+            for (int i = 0; i < this.VP_WIDTH; i++) {
+                for (int j = 0; j < this.VP_HEIGHT; j++) {
+                    Point tilePoint = new Point(this.globalCoord.x + i, this.globalCoord.y + j);
+                    //System.out.println(i + "  " + j);
+                    if (this.map.getGrid().hasTile(tilePoint)) {
+                        PnpTile tile = this.map.getTile(tilePoint);
+                        Iterator<PnpObject> objectIterator = tile.objectList.iterator();
+                        while (objectIterator.hasNext()) {
+                            objectBatch.draw(objectIterator.next().texture, i * SCALE, j * SCALE);
+                        }
+                    }
+                }
+            }
+            objectBatch.end();
+            //shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            if (this.tileSelected) {
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                shapeRenderer.setColor(1, 0, 0, 0);
+                shapeRenderer.rect(this.selectedTilePoint.x * SCALE, this.selectedTilePoint.y * SCALE, 32, 32);
+                shapeRenderer.end();
+            }
+            //miscBatch.begin();
+
+            //miscBatch.end();
+            this.stage.draw();
         }
-        objectBatch.end();
-
-        this.stage.draw();
-
     }
 
     boolean dragging;
@@ -149,13 +165,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 this.tileSelected = true;
 
                 if ((screenY + 64 > screenHeight) && screenX - 64 < 0) { //leftBottom
-                    this.camera.position.set(Gdx.graphics.getWidth() - screenX - 32, screenY - 32, 0);
+                    this.camera.position.set(Gdx.graphics.getWidth() - screenX - 64, screenY - 64, 0);
                 } else if (screenX - 64 < 0 ||  (screenY - 64 < 0 && screenX - 64 < 0)) { //LeftTop || left
-                    this.camera.position.set( Gdx.graphics.getWidth() - screenX - 64, screenY + 32, 0);
+                    this.camera.position.set( Gdx.graphics.getWidth() - screenX - 64, screenY + 64, 0);
                 } else if (screenY - 64 < 0 && screenX + 64 > screenWidht) { //rightTop
-                    this.camera.position.set(Gdx.graphics.getWidth() - screenX + 64, screenY + 32, 0);
+                    this.camera.position.set(Gdx.graphics.getWidth() - screenX + 64, screenY + 64, 0);
                 } else if ((screenY + 64 > screenHeight) && (screenX + 64 > screenWidht)) { //rightBottom
-                    this.camera.position.set(Gdx.graphics.getWidth() - screenX + 64, screenY - 32, 0);
+                    this.camera.position.set(Gdx.graphics.getWidth() - screenX + 64, screenY - 64, 0);
                 } else if ((screenX + 64 > screenWidht)) { // Right
                     this.camera.position.set(Gdx.graphics.getWidth() - screenX + 64, screenY, 0);
                 } else {
@@ -267,10 +283,15 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     @Override
     public void resize(int width, int height) {
         // viewport must be updated for it to work properly
+        System.out.println("resize");
         viewport.update(width, height, true);
-        this.testBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+        this.miscBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
         this.tileBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
         this.objectBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+
+        this.shapeRenderer.updateMatrices();
+        this.shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+
     }
 
     @Override
@@ -278,12 +299,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // disposable stuff must be disposed
         //shapes.dispose();
         super.dispose();
-        this.testBatch.dispose();
+        this.miscBatch.dispose();
         this.tileBatch.dispose();
         this.map.dispose();
         this.texture.dispose();
         this.stage.dispose();
         this.skin.dispose();
+        this.shapeRenderer.dispose();
     }
 
 

@@ -18,6 +18,18 @@ public class PnpTile {
     public PnpTile() {
 
     }
+    public PnpTile(String type) {
+        //System.out.println(type);
+        this.type = type;
+        if (this.type.equals("water")) {
+            this.texture = new Texture("core/assets/res/water.png");
+        } else if (this.type.equals("dirt")) {
+            this.texture = new Texture("core/assets/res/dirt.png");
+        } else {
+            this.texture = new Texture("core/assets/res/grass.png");
+        }
+        this.objectList = new ArrayList<PnpObject>();
+    }
 
     public PnpTile(int x, int y) {
         this.type = type;

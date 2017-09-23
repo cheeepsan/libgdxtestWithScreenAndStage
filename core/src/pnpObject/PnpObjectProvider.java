@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import pnpMap.PnpTile;
 
 
 import java.util.ArrayList;
@@ -11,9 +12,11 @@ import java.util.ArrayList;
 public class PnpObjectProvider {
     private final String UNIT = "unit";
     private final String ITEM = "item";
+    private final String TILE = "tile";
 
     private final String itemsPath = "core/assets/res/items.json";
     private final String unitsPath = "core/assets/res/units.json";
+    private final String tilesPath = "core/assets/res/tiles.json";
     /*
     public PnpObject getObject(String objectType) {
         if (objectType == UNIT) {
@@ -31,6 +34,8 @@ public class PnpObjectProvider {
             return this.getUnits(reader);
         } else if (objectType == ITEM) {
 
+        } else if (objectType == TILE) {
+
         }
         return null;
     }
@@ -46,6 +51,18 @@ public class PnpObjectProvider {
             objects.add(u);
         }
         return objects;
+    }
+
+    public ArrayList<String> getTileTypes() {
+        JsonReader reader = new JsonReader();
+        JsonValue value = reader.parse(Gdx.files.internal(this.tilesPath));
+
+        ArrayList<String> types = new ArrayList<String>();
+        for (JsonValue tile : value.get("tiles")) {
+            types.add(tile.getString("type"));
+        }
+
+        return types;
     }
     /*private JsonValue readJson(String path) {
         if (path == null) {

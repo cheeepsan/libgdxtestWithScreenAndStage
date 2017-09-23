@@ -8,13 +8,15 @@ import java.util.HashMap;
 
 public class PnpGrid {
     public HashMap<Point, PnpTile> gridMap;
+    public PnpMapGenerator generator;
+    private PnpMap map;
     private int width, height;
 
     public PnpGrid(int width, int height) {
         this.width = width;
         this.height = height;
         this.gridMap = new HashMap<Point, PnpTile>();
-        this.fillGrid();
+        //this.fillGrid();
 
     }
     public void fillGrid() {
@@ -41,6 +43,10 @@ public class PnpGrid {
         this.gridMap.put(point, tile);
     }
 
+    public void generate() {
+        this.generator = new PnpMapGenerator(this.width, this.height, this);
+
+    }
     public PnpTile getTile(int x, int y) {
         return this.gridMap.get(new Point(x, y));
     }
@@ -61,6 +67,11 @@ public class PnpGrid {
         for (HashMap.Entry<Point, PnpTile> entry : this.gridMap.entrySet()) {
             entry.getValue().dispose();
         }
-
+    }
+    public void setMap(PnpMap map) {
+        this.map = map;
+    }
+    public PnpMap getMap() {
+        return this.map;
     }
 }
