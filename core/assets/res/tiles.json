@@ -1,13 +1,19 @@
 {
   "tiles": [
     {
-      "type": "water"
+      "type": "water",
+      "passable": false,
+      "texture": "core/assets/res/water.png"
     },
     {
-      "type": "grass"
+      "type": "grass",
+      "passable": true,
+      "texture": "core/assets/res/grass.png"
     },
     {
-      "type": "dirt"
+      "type": "dirt",
+      "passable": true,
+      "texture": "core/assets/res/dirt.png"
     }
   ]
 }

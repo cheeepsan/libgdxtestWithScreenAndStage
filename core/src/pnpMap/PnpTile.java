@@ -1,7 +1,9 @@
 package pnpMap;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.JsonValue;
 import pnpObject.PnpObject;
+import pnpObject.PnpObjectProvider;
 
 import java.util.ArrayList;
 
@@ -10,7 +12,9 @@ public class PnpTile {
     public Texture texture;
     public int x, y;
     public String type;
-    public boolean canGo = true;
+    public boolean passable = true;
+
+
     public enum Type {
         WATER, GROUND
     }
@@ -18,23 +22,35 @@ public class PnpTile {
     public PnpTile() {
 
     }
+    public PnpTile(String type, PnpObjectProvider p) {
+        this.type = type;
+        JsonValue data = p.getTileDataByType(type);
+        this.passable = data.getBoolean("passable");
+        this.texture = new Texture(data.getString("texture"));
+
+        this.objectList = new ArrayList<PnpObject>();
+    }
     public PnpTile(String type) {
         //System.out.println(type);
         this.type = type;
+
         if (this.type.equals("water")) {
             this.texture = new Texture("core/assets/res/water.png");
+            this.passable = false;
+
         } else if (this.type.equals("dirt")) {
             this.texture = new Texture("core/assets/res/dirt.png");
         } else {
             this.texture = new Texture("core/assets/res/grass.png");
         }
+
         this.objectList = new ArrayList<PnpObject>();
     }
 
     public PnpTile(int x, int y) {
         this.type = type;
         if (this.type == "WATER") {
-            this.canGo = false;
+            this.passable = false;
         }
 
         this.objectList = new ArrayList<PnpObject>();

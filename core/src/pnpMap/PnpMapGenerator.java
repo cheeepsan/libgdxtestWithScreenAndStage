@@ -25,7 +25,7 @@ public class PnpMapGenerator {
 
     protected void generate() {
         centerPoints = new HashMap<Point, String>();
-        this.generateCenterPoints(MathUtils.random(400));
+        this.generateCenterPoints(100);
         this.generateBlocks();
 
     }
@@ -77,10 +77,10 @@ public class PnpMapGenerator {
                     k++;
                 }
                 //System.out.println(closestPoint + " " + this.centerPoints.get(closestPoint));
-                this.grid.addTile(point, new PnpTile(this.centerPoints.get(closestPoint)));
+                this.grid.addTile(point, new PnpTile(this.centerPoints.get(closestPoint), this.provider));
             }
         }
-        System.out.println(this.grid);
+        //System.out.println(this.grid);
         this.grid.getMap().generated = true;
     }
 

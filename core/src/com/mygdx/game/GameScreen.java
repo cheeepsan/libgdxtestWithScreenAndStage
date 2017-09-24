@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import pnpMap.PnpMap;
 import pnpObject.PnpObject;
 import pnpMap.PnpTile;
+import pnpObject.PnpObjectProvider;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -52,10 +53,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public GameScreen(MyGdxGame game) {
         this.game = game;
         this.camera = new OrthographicCamera();
-
         //this.viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera); OLD
         this.viewport = new ScreenViewport(this.camera);
-
+        //System.out.println(Gdx.files.getExternalStoragePath());
+        //System.out.println(Gdx.files.getLocalStoragePath());
         this.skin = new Skin(Gdx.files.internal("core/assets/cloud-form/skin/cloud-form-ui.json"));
 
         this.stage = new GameStage(this.viewport, this, this.game);

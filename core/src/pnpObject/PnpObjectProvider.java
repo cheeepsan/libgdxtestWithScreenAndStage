@@ -64,6 +64,18 @@ public class PnpObjectProvider {
 
         return types;
     }
+
+    public JsonValue getTileDataByType(String type) {
+        JsonReader reader = new JsonReader();
+        JsonValue value = reader.parse(Gdx.files.internal(this.tilesPath));
+        for (JsonValue tile : value.get("tiles")) {
+            if (tile.getString("type").equals(type)) {
+                return tile;
+            }
+        }
+
+        return null;
+    }
     /*private JsonValue readJson(String path) {
         if (path == null) {
             return null;
