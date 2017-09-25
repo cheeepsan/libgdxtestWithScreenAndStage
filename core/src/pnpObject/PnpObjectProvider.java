@@ -45,9 +45,11 @@ public class PnpObjectProvider {
         ArrayList<PnpObject> objects = new ArrayList<PnpObject>();
         for (JsonValue unit : value.get("units")) {
             PnpUnit u = new PnpUnit();
-            u.setHp(Integer.parseInt(unit.getString("hp")));
-            u.setAttack(Integer.parseInt(unit.getString("attack")));
+            u.setHp(unit.getInt("hp"));
+            u.setAttack(unit.getInt("attack"));
             u.setName(unit.getString("name"));
+            u.setTeam(unit.getString("team"));
+            u.setTexture(unit.getString("texture"));
             objects.add(u);
         }
         return objects;

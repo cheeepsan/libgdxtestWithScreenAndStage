@@ -1,14 +1,18 @@
 {
   "units": [
     {
-      "name": "name",
-      "hp": "10",
-      "attack": "1"
+      "name": "Ghoul",
+      "hp": 10,
+      "attack": 1,
+      "team": 1,
+      "texture": "core/assets/res/ghoul.png"
     },
     {
-      "name": "name1",
-      "hp": "20",
-      "attack": "3"
+      "name": "Dwarf",
+      "hp": 20,
+      "attack": 3,
+      "team": 2,
+      "texture": "core/assets/res/dwarf_m.png"
     }
   ]
 }

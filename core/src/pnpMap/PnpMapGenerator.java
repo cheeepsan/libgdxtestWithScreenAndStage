@@ -25,7 +25,7 @@ public class PnpMapGenerator {
 
     protected void generate() {
         centerPoints = new HashMap<Point, String>();
-        this.generateCenterPoints(100);
+        this.generateCenterPoints(1000);
         this.generateBlocks();
 
     }

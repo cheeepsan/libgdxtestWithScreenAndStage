@@ -50,6 +50,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public SpriteBatch tileBatch;
     public SpriteBatch objectBatch;
     public ShapeRenderer shapeRenderer;
+
+    public EpMechanics mechanics;
     public GameScreen(MyGdxGame game) {
         this.game = game;
         this.camera = new OrthographicCamera();
@@ -67,18 +69,20 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         this.globalCoord = new Point(0, 0);
 
-        this.map = new PnpMap(100, 100);
+        this.map = new PnpMap(500, 500);
         this.map.createGrid();
         this.map.initElemts();
 
         this.selectedTilePoint = new Point(0, 0);
 
-        miscBatch = new SpriteBatch();
-        tileBatch = new SpriteBatch();
-        objectBatch = new SpriteBatch();
-
-        Gdx.input.setInputProcessor(this);
+        this.miscBatch = new SpriteBatch();
+        this.tileBatch = new SpriteBatch();
+        this.objectBatch = new SpriteBatch();
         this.shapeRenderer = new ShapeRenderer();
+
+        this.mechanics = new EpMechanics(this.game, this, this.stage, this.map);
+        Gdx.input.setInputProcessor(this);
+
 
 
 
@@ -86,12 +90,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        this.camera.update();
         if (this.map.generated) {
-
-
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-            this.camera.update();
 
             if (redraw) {
                 System.out.println(this.camera.position);
@@ -200,7 +201,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 if (this.selectedTilePoint != tilePoint) {
                     PnpTile selectedTile = this.map.getTile(this.selectedTilePoint);
 
-                    if (!selectedTile.objectList.isEmpty() && this.pnpObjectSelected && selectedTile.objectList.contains(this.seleectedPnpObject)) {
+                    if (this.mechanics.canGo(this.seleectedPnpObject, tilePoint) &&
+                            !selectedTile.objectList.isEmpty() && this.pnpObjectSelected &&
+                            selectedTile.objectList.contains(this.seleectedPnpObject)) {
 
                         tile.objectList.add(this.seleectedPnpObject);
                         selectedTile.objectList.remove(this.seleectedPnpObject);

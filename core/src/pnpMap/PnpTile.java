@@ -7,17 +7,12 @@ import pnpObject.PnpObjectProvider;
 
 import java.util.ArrayList;
 
-public class PnpTile {
+public class PnpTile extends PnpObject{
     public ArrayList<PnpObject> objectList;
     public Texture texture;
     public int x, y;
     public String type;
     public boolean passable = true;
-
-
-    public enum Type {
-        WATER, GROUND
-    }
 
     public PnpTile() {
 
@@ -29,6 +24,7 @@ public class PnpTile {
         this.texture = new Texture(data.getString("texture"));
 
         this.objectList = new ArrayList<PnpObject>();
+        super.objectType = "tile";
     }
     public PnpTile(String type) {
         //System.out.println(type);

@@ -39,8 +39,11 @@ public class PnpMap extends Map {
         //ArrayList<PnpObject> items = p.getObjects("item");
 
         Iterator<PnpObject> iterator = units.iterator();
+        int i = 0;
         while (iterator.hasNext()) {
-            this.grid.addObject(new Point(0,0), iterator.next());
+
+            this.grid.addObject(new Point(i,0), iterator.next());
+            i++;
         }
     }
     public PnpGrid getGrid() {
