@@ -5,14 +5,14 @@
       "hp": 10,
       "attack": 1,
       "team": 1,
-      "texture": "core/assets/res/ghoul.png"
+      "texture": "core/assets/res/textures/ghoul.png"
     },
     {
       "name": "Dwarf",
       "hp": 20,
       "attack": 3,
       "team": 2,
-      "texture": "core/assets/res/dwarf_m.png"
+      "texture": "core/assets/res/textures/dwarf_m.png"
     }
   ]
 }

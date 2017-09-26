@@ -27,5 +27,8 @@ public class PnpUnit extends PnpObject {
     public void setTexture(String texture) {
         super.texture = new Texture(texture);
     }
+    public void setTexture(Texture texture) {
+        super.texture = texture;
+    }
 
 }

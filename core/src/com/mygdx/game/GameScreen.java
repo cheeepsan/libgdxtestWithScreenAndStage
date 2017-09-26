@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,6 +27,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private GameStage stage;
     private Skin skin;
     private Table uiTable;
+    private AssetManager assetManager;
+    private PnpObjectProvider provider;
 
     private OrthographicCamera camera;
     private ScreenViewport viewport;
@@ -55,10 +58,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public GameScreen(MyGdxGame game) {
         this.game = game;
         this.camera = new OrthographicCamera();
-        //this.viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera); OLD
+        this.assetManager = game.assetManager;
+        this.provider = game.provider;
+
         this.viewport = new ScreenViewport(this.camera);
-        //System.out.println(Gdx.files.getExternalStoragePath());
-        //System.out.println(Gdx.files.getLocalStoragePath());
+
         this.skin = new Skin(Gdx.files.internal("core/assets/cloud-form/skin/cloud-form-ui.json"));
 
         this.stage = new GameStage(this.viewport, this, this.game);
@@ -69,7 +73,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         this.globalCoord = new Point(0, 0);
 
-        this.map = new PnpMap(500, 500);
+        this.map = new PnpMap(500, 500, this.provider);
         this.map.createGrid();
         this.map.initElemts();
 
@@ -287,7 +291,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     @Override
     public void resize(int width, int height) {
         // viewport must be updated for it to work properly
-        System.out.println("resize");
+        //System.out.println("resize");
         viewport.update(width, height, true);
         this.miscBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
         this.tileBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);

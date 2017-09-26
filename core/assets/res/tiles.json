@@ -3,22 +3,22 @@
     {
       "type": "water",
       "passable": false,
-      "texture": "core/assets/res/dngn_open_sea.png"
+      "texture": "core/assets/res/textures/dngn_open_sea.png"
     },
     {
       "type": "stone",
       "passable": true,
-      "texture": "core/assets/res/floor_sand_stone1.png"
+      "texture": "core/assets/res/textures/floor_sand_stone1.png"
     },
     {
       "type": "dirt",
       "passable": true,
-      "texture": "core/assets/res/dirt_full.png"
+      "texture": "core/assets/res/textures/dirt_full.png"
     },
     {
       "type": "rect_grey",
       "passable": true,
-      "texture": "core/assets/res/rect_gray0.png"
+      "texture": "core/assets/res/textures/rect_gray0.png"
     }
   ]
 }

@@ -15,11 +15,11 @@ public class PnpMapGenerator {
     private PnpObjectProvider provider;
     private HashMap<Point, String> centerPoints;
 
-    public PnpMapGenerator(int width, int height, PnpGrid grid) {
+    public PnpMapGenerator(int width, int height, PnpGrid grid, PnpObjectProvider provider) {
         this.width = width;
         this.height = height;
         this.grid = grid;
-        this.provider = new PnpObjectProvider();
+        this.provider = provider;
         this.generate();
     }
 
@@ -37,14 +37,10 @@ public class PnpMapGenerator {
             int y = MathUtils.random(this.height);
 
             Point newPoint = new Point(x, y);
-            //if (this.centerPoints.containsKey(newPoint)) {
-            //    System.out.println("recursion");
-            //    this.generateCenterPoints(i);
-            //}
+
             ArrayList<String> tileTypes = this.provider.getTileTypes();
 
             int typeNum = MathUtils.random(tileTypes.size() - 1);
-            //System.out.println(tileTypes.get(typeNum));
             this.centerPoints.put(newPoint, tileTypes.get(typeNum));
         }
     }

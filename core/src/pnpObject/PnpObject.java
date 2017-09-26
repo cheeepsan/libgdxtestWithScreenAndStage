@@ -1,5 +1,6 @@
 package pnpObject;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Json;
@@ -10,6 +11,7 @@ public class PnpObject extends Actor {
     public Texture texture;
     public String name;
     public Point position;
+
     protected String objectType;
     protected String team = null;
     protected int attack = 0;
@@ -19,13 +21,17 @@ public class PnpObject extends Actor {
     protected final String itemsPath = "core/assets/res/items.json";
     protected final String unitsPath = "core/assets/res/units.json";
 
-    public PnpObject() {
-        this.texture = new Texture("core/assets/res/object.png");
+    public PnpObject(){}
+
+    public PnpObject(PnpObjectProvider p) {
+        //this.texture = new Texture("core/assets/res/object.png");
+        this.texture = p.getTexture("core/assets/res/textures/object.png");
     }
 
-    public PnpObject(String name) {
+    public PnpObject(String name, PnpObjectProvider p) {
         this.name = name;
-        this.texture = new Texture("core/assets/res/object.png");
+        //this.texture = new Texture("core/assets/res/object.png");
+        this.texture = p.getTexture("core/assets/res/textures/object.png");
         this.objectType = "object";
     }
 

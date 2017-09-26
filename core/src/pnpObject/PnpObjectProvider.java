@@ -1,6 +1,8 @@
 package pnpObject;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -17,8 +19,11 @@ public class PnpObjectProvider {
     private final String itemsPath = "core/assets/res/items.json";
     private final String unitsPath = "core/assets/res/units.json";
     private final String tilesPath = "core/assets/res/tiles.json";
+
+    private JsonReader reader;
+    private AssetManager assetManager;
     /*
-    public PnpObject getObject(String objectType) {
+    public PnpObject getObject(String objectType) { //FACTORY
         if (objectType == UNIT) {
             return new PnpUnit();
         } else if (objectType == ITEM) {
@@ -27,8 +32,12 @@ public class PnpObjectProvider {
 
         return null;
     }*/
+    public PnpObjectProvider(AssetManager assetManager) {
+        this.assetManager = assetManager;
+        this.reader = new JsonReader();
+    }
     public ArrayList<PnpObject> getObjects(String objectType) {
-        JsonReader reader = new JsonReader();
+
 
         if (objectType == UNIT) {
             return this.getUnits(reader);
@@ -49,15 +58,15 @@ public class PnpObjectProvider {
             u.setAttack(unit.getInt("attack"));
             u.setName(unit.getString("name"));
             u.setTeam(unit.getString("team"));
-            u.setTexture(unit.getString("texture"));
+            u.setTexture(this.assetManager.get(unit.getString("texture"), Texture.class));
             objects.add(u);
         }
         return objects;
     }
 
     public ArrayList<String> getTileTypes() {
-        JsonReader reader = new JsonReader();
-        JsonValue value = reader.parse(Gdx.files.internal(this.tilesPath));
+
+        JsonValue value = this.reader.parse(Gdx.files.internal(this.tilesPath));
 
         ArrayList<String> types = new ArrayList<String>();
         for (JsonValue tile : value.get("tiles")) {
@@ -68,8 +77,8 @@ public class PnpObjectProvider {
     }
 
     public JsonValue getTileDataByType(String type) {
-        JsonReader reader = new JsonReader();
-        JsonValue value = reader.parse(Gdx.files.internal(this.tilesPath));
+
+        JsonValue value = this.reader.parse(Gdx.files.internal(this.tilesPath));
         for (JsonValue tile : value.get("tiles")) {
             if (tile.getString("type").equals(type)) {
                 return tile;
@@ -77,6 +86,25 @@ public class PnpObjectProvider {
         }
 
         return null;
+    }
+
+    public ArrayList<String> getTexturePath() {
+        ArrayList<String> textures = new ArrayList<String>();
+        JsonValue value = this.reader.parse(Gdx.files.internal(this.tilesPath));
+        for (JsonValue tile : value.get("tiles")) {
+            textures.add(tile.getString("texture"));
+        }
+        value = this.reader.parse(Gdx.files.internal(this.unitsPath));
+        for (JsonValue unit : value.get("units")) {
+            textures.add(unit.getString("texture"));
+        }
+
+        return textures;
+
+    }
+
+    public Texture getTexture(String path) {
+        return this.assetManager.get(path, Texture.class);
     }
     /*private JsonValue readJson(String path) {
         if (path == null) {

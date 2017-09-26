@@ -1,6 +1,7 @@
 package pnpMap;
 
 import pnpObject.PnpObject;
+import pnpObject.PnpObjectProvider;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -11,28 +12,17 @@ public class PnpGrid {
     public PnpMapGenerator generator;
     private PnpMap map;
     private int width, height;
+    private PnpObjectProvider provider;
 
-    public PnpGrid(int width, int height) {
+    public PnpGrid(int width, int height, PnpObjectProvider provider) {
         this.width = width;
         this.height = height;
         this.gridMap = new HashMap<Point, PnpTile>();
+        this.provider = provider;
         //this.fillGrid();
 
     }
-    public void fillGrid() {
-        for (int i = 0; i < this.width; i++) {
-            for (int j = 0; j < this.height; j++) {
-                PnpTile tile = new PnpTile(i, j);
-                //if (i % 13 == 0 ) {
 
-                    //PnpObject object = new PnpObject("test " + i + " by " + j);
-                    //tile.objectList.add(object);
-
-                //}
-                this.gridMap.put(new Point(i, j), tile);
-            }
-        }
-    }
     public void addTile(Point point, PnpTile tile) {
         this.gridMap.put(point, tile);
     }
@@ -44,7 +34,7 @@ public class PnpGrid {
     }
 
     public void generate() {
-        this.generator = new PnpMapGenerator(this.width, this.height, this);
+        this.generator = new PnpMapGenerator(this.width, this.height, this, this.provider);
 
     }
     public PnpTile getTile(int x, int y) {

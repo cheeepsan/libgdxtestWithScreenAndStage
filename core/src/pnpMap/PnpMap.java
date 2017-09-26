@@ -15,14 +15,16 @@ public class PnpMap extends Map {
     private PnpGrid grid;
     private MapLayer gridLayer;
     private int width, height = 0;
+    private PnpObjectProvider provider;
     public boolean generated = false;
 
-    public PnpMap(int width, int height) {
+    public PnpMap(int width, int height, PnpObjectProvider provider) {
         this.width = width;
         this.height = height;
+        this.provider = provider;
     }
     public void createGrid() {
-       this.grid = new PnpGrid(width, height);
+       this.grid = new PnpGrid(width, height, this.provider);
        this.grid.setMap(this);
        this.grid.generate();
     }
@@ -32,9 +34,9 @@ public class PnpMap extends Map {
 
     }
     public void initElemts() {
-        PnpObjectProvider p = new PnpObjectProvider();
+
         //Add units
-        ArrayList<PnpObject> units = p.getObjects("unit");
+        ArrayList<PnpObject> units = this.provider.getObjects("unit");
         //Add items
         //ArrayList<PnpObject> items = p.getObjects("item");
 
