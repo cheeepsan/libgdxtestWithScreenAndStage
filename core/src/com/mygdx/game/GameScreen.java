@@ -73,7 +73,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         this.globalCoord = new Point(0, 0);
 
-        this.map = new PnpMap(500, 500, this.provider);
+        this.map = new PnpMap(50, 50, this.provider);
         this.map.createGrid();
         this.map.initElemts();
 
@@ -247,6 +247,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             //camera.translate(-1, 0, 0);

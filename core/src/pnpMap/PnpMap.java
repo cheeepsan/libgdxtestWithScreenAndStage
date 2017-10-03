@@ -14,7 +14,7 @@ import java.util.Iterator;
 public class PnpMap extends Map {
     private PnpGrid grid;
     private MapLayer gridLayer;
-    private int width, height = 0;
+    public int width, height = 0;
     private PnpObjectProvider provider;
     public boolean generated = false;
 

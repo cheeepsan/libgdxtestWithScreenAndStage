@@ -98,7 +98,7 @@ public class PnpObjectProvider {
         for (JsonValue unit : value.get("units")) {
             textures.add(unit.getString("texture"));
         }
-
+        textures.add("core/assets/res/textures/no_text.png"); //Maybe clean later
         return textures;
 
     }

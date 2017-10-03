@@ -17,8 +17,13 @@ public class PnpTile extends PnpObject {
     public PnpTile(String type, PnpObjectProvider p) {
         this.type = type;
         JsonValue data = p.getTileDataByType(type);
-        this.passable = data.getBoolean("passable");
-        this.texture = p.getTexture(data.getString("texture"));
+        if (data != null) {
+            this.passable = data.getBoolean("passable");
+            this.texture = p.getTexture(data.getString("texture"));
+        } else {
+            this.passable = false;
+            this.texture = p.getTexture("core/assets/res/textures/no_text.png");
+        }
 
         this.objectList = new ArrayList<PnpObject>();
         super.objectType = "tile";
