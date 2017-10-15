@@ -41,7 +41,7 @@ public class PnpMapGenerator {
         this.centerPointsList = new ArrayList<Point>();
         this.generateCenterPoints(100);
         System.out.println("Generating rooms");
-        this.generateRooms(10);
+        this.generateRooms(500);
         System.out.println("Fitting rooms");
         this.fitRooms();
         System.out.println("Filling empty spaces");
@@ -127,34 +127,31 @@ public class PnpMapGenerator {
         }
 
     }
+
     private void fitRooms() {
         Iterator<Point> centerIterator = this.centerPointsList.iterator();
         ArrayList<Point> roomsToDelete = new ArrayList<Point>();
+
         while (centerIterator.hasNext()) {
+
+            if (this.rooms.isEmpty()) break;
+
             Point center = centerIterator.next();
             boolean fits = false;
 
             Iterator<Point> roomIterator = this.rooms.iterator();
-            int num = 0;
+
             while (roomIterator.hasNext()) {
 
-                //System.out.println("checking space for room " + num);
-                System.out.println("center: " + center);
                 Point room = roomIterator.next();
 
                 roomLoop: //bad practice?
                 for (int i = 0; i < room.x; i++) {
-                    for (int j  = 0; j < room.y; j++) {
+                    for (int j = 0; j < room.y; j++) {
                         Point tile = new Point((center.x + i), (center.y + j));
                         boolean hasTile = this.grid.hasTile(tile);
-                        //System.out.println("x: " + tile.getX() + ", y: " + tile.getY() + " has tile: " + hasTile);
-                        System.out.println(this.width + " asd " + tile.getX());
-                        if ((int)tile.getX() > this.width || (int)tile.getY() > this.height) {
-                            fits = false;
-                            System.out.println("TOO BIG");
-                            break roomLoop;
-                        }
-                        if (hasTile) {
+
+                        if ((tile.getX() + 1) > this.width || (tile.getY() + 1) > this.height || hasTile) {
                             fits = false;
                             break roomLoop;
                         } else {
@@ -162,25 +159,24 @@ public class PnpMapGenerator {
                         }
                     }
                 }
-                //System.out.println("new iteration");
+
                 if (fits) {
-                    //System.out.println("fits into " +  (center.x + room.x) + ", y " +  (center.y + room.y));
+
                     for (int i = 0; i < room.x; i++) {
                         for (int j = 0; j < room.y; j++) {
                             Point tile;
-                            if ( i == (room.x - 1) || j == (room.y - 1) || i == 0 || j == 0 ) {
+                            if (i == (room.x - 1) || j == (room.y - 1) || i == 0 || j == 0) {
 
-                                tile = new Point(center.x + room.x + i, center.y + room.y +j);
-                                System.out.println(tile.getX());
+                                tile = new Point(center.x +i, center.y + j);
                                 this.grid.addTile(tile, new PnpTile("stone", this.provider));
                                 continue;
                             }
-                            tile = new Point((center.x + room.x + i), (center.y + room.y +j));
+                            tile = new Point((center.x +  i), (center.y + j));
                             this.grid.addTile(tile, new PnpTile("roomWall", this.provider));
                         }
                     }
                     roomsToDelete.add(room);
-                    continue;
+                    break;
                 }
             }
             if (roomsToDelete.size() > 0) {
@@ -189,14 +185,13 @@ public class PnpMapGenerator {
                 }
                 roomsToDelete.clear();
             }
-            if (fits) break;
         }
     }
 
     public void fillEmpty() {
         for (int i = 0; i < this.width; i++) {
             for (int j = 0; j < this.height; j++) {
-                if (this.grid.hasTile(new Point(i,j))) {
+                if (this.grid.hasTile(new Point(i, j))) {
 
                 } else {
                     this.grid.addTile(new Point(i, j), new PnpTile("dirt", this.provider));
@@ -204,11 +199,12 @@ public class PnpMapGenerator {
             }
         }
     }
+
     private double calculateDistance(Point grid, Point center) {
         return grid.distance(center);
     }
 
     public void checkRadius(Point point) {
-        
+
     }
 }
