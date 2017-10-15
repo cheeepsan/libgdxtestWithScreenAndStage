@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import pnpObject.PnpObjectProvider;
 
 import java.awt.*;
+import java.nio.channels.Pipe;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,9 +39,9 @@ public class PnpMapGenerator {
         this.rooms = new ArrayList<Point>();
         this.centerPoints = new HashMap<Point, String>();
         this.centerPointsList = new ArrayList<Point>();
-        this.generateCenterPoints(10);
+        this.generateCenterPoints(100);
         System.out.println("Generating rooms");
-        this.generateRooms(5);
+        this.generateRooms(10);
         System.out.println("Fitting rooms");
         this.fitRooms();
         System.out.println("Filling empty spaces");
@@ -128,20 +129,31 @@ public class PnpMapGenerator {
     }
     private void fitRooms() {
         Iterator<Point> centerIterator = this.centerPointsList.iterator();
+        ArrayList<Point> roomsToDelete = new ArrayList<Point>();
         while (centerIterator.hasNext()) {
             Point center = centerIterator.next();
             boolean fits = false;
 
             Iterator<Point> roomIterator = this.rooms.iterator();
+            int num = 0;
             while (roomIterator.hasNext()) {
+
+                //System.out.println("checking space for room " + num);
+                System.out.println("center: " + center);
                 Point room = roomIterator.next();
-                if ((center.x + room.x) > this.width || (center.y + room.y) > this.height) {
-                    continue;
-                }
+
                 roomLoop: //bad practice?
                 for (int i = 0; i < room.x; i++) {
                     for (int j  = 0; j < room.y; j++) {
-                        boolean hasTile = this.grid.hasTile(new Point(center.x + room.x, center.y + room.y));
+                        Point tile = new Point((center.x + i), (center.y + j));
+                        boolean hasTile = this.grid.hasTile(tile);
+                        //System.out.println("x: " + tile.getX() + ", y: " + tile.getY() + " has tile: " + hasTile);
+                        System.out.println(this.width + " asd " + tile.getX());
+                        if ((int)tile.getX() > this.width || (int)tile.getY() > this.height) {
+                            fits = false;
+                            System.out.println("TOO BIG");
+                            break roomLoop;
+                        }
                         if (hasTile) {
                             fits = false;
                             break roomLoop;
@@ -150,20 +162,34 @@ public class PnpMapGenerator {
                         }
                     }
                 }
-
+                //System.out.println("new iteration");
                 if (fits) {
-
+                    //System.out.println("fits into " +  (center.x + room.x) + ", y " +  (center.y + room.y));
                     for (int i = 0; i < room.x; i++) {
                         for (int j = 0; j < room.y; j++) {
+                            Point tile;
                             if ( i == (room.x - 1) || j == (room.y - 1) || i == 0 || j == 0 ) {
-                                this.grid.addTile(new Point(room.x + i, room.y +j), new PnpTile("stone", this.provider));
+
+                                tile = new Point(center.x + room.x + i, center.y + room.y +j);
+                                System.out.println(tile.getX());
+                                this.grid.addTile(tile, new PnpTile("stone", this.provider));
                                 continue;
                             }
-                            this.grid.addTile(new Point(room.x + i, room.y +j), new PnpTile("roomWall", this.provider));
+                            tile = new Point((center.x + room.x + i), (center.y + room.y +j));
+                            this.grid.addTile(tile, new PnpTile("roomWall", this.provider));
                         }
                     }
+                    roomsToDelete.add(room);
+                    continue;
                 }
             }
+            if (roomsToDelete.size() > 0) {
+                for (Point room : roomsToDelete) {
+                    this.rooms.remove(room);
+                }
+                roomsToDelete.clear();
+            }
+            if (fits) break;
         }
     }
 

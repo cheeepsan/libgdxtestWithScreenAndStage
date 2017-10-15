@@ -99,7 +99,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         if (this.map.generated) {
 
             if (redraw) {
-                System.out.println(this.camera.position);
+                //System.out.println(this.camera.position);
                 this.redraw = false;
             }
 
@@ -132,7 +132,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             if (this.tileSelected) {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.setColor(1, 0, 0, 0);
-                shapeRenderer.rect(this.selectedTilePoint.x * SCALE, this.selectedTilePoint.y * SCALE, 32, 32);
+                shapeRenderer.rect((this.selectedTilePoint.x - this.globalCoord.x) * SCALE, (this.selectedTilePoint.y - this.globalCoord.y) * SCALE, 32, 32);
                 shapeRenderer.end();
             }
             //miscBatch.begin();
@@ -253,24 +253,24 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             //camera.translate(-1, 0, 0);
             //System.out.println("left");
             this.redraw = true;
-            this.globalCoord.x--;
+            this.globalCoord.x -= 10;
             return true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             //camera.translate(1, 0, 0);
             //System.out.println("right, campos: " + camera.position);
             this.redraw = true;
-            this.globalCoord.x++;
+            this.globalCoord.x += 10;
             return true;
 
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             //camera.translate(0, -1, 0);
-            this.globalCoord.y--;
+            this.globalCoord.y -= 10;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             //camera.translate(0, 1, 0);
-            this.globalCoord.y++;
+            this.globalCoord.y += 10;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
