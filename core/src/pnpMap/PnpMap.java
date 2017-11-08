@@ -43,7 +43,7 @@ public class PnpMap extends Map {
         Iterator<PnpObject> iterator = units.iterator();
         int i = 0;
         while (iterator.hasNext()) {
-
+            System.out.println("unit " + i);
             this.grid.addObject(new Point(i,0), iterator.next());
             i++;
         }

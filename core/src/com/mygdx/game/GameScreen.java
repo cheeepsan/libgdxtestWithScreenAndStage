@@ -10,14 +10,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import pnpMap.PnpMap;
 import pnpObject.PnpObject;
 import pnpMap.PnpTile;
 import pnpObject.PnpObjectProvider;
+import pnpObject.PnpUnit;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -27,8 +28,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private GameStage stage;
     private Skin skin;
     private Table uiTable;
+    private Window uiWindow;
     private AssetManager assetManager;
     private PnpObjectProvider provider;
+
 
     private OrthographicCamera camera;
     private ScreenViewport viewport;
@@ -66,6 +69,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.skin = new Skin(Gdx.files.internal("core/assets/cloud-form/skin/cloud-form-ui.json"));
 
         this.stage = new GameStage(this.viewport, this, this.game);
+
         this.uiTable = new Table();
 
         this.uiTable.setFillParent(true);
@@ -247,7 +251,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-
+        if (Gdx.input.isKeyPressed(Input.Keys.I)) {
+            if (this.seleectedPnpObject != null)
+                System.out.println(this.seleectedPnpObject.getObjectType());
+                this.invokeInventory((PnpUnit)this.seleectedPnpObject);
+        }
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             //camera.translate(-1, 0, 0);
@@ -288,7 +296,19 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         //System.out.println("input handle");
         return false;
     }
+    public void invokeInventory(PnpUnit unit) {
+        System.out.println(unit.getAttack());
+        uiWindow = new Window("Inventory screen", this.skin);
+        uiWindow.setVisible(true);
+        List equipment = new List(this.skin);
+        List inventory = new List(this.skin);
 
+        SplitPane invPane = new SplitPane(equipment, inventory, true, this.skin);
+        uiWindow.addActor(invPane);
+        this.stage.addActor(uiWindow);
+        Gdx.input.setInputProcessor(this.stage);
+
+    }
     @Override
     public void resize(int width, int height) {
         // viewport must be updated for it to work properly

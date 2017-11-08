@@ -68,6 +68,9 @@ public class GameStage extends Stage {
     public void addListeners() {
         Array<Actor> actors = this.getActors();
     }
+    public void showInventory(PnpObject unit) {
+
+    }
 
     public GameScreen getScreen() {return this.screen;}
 

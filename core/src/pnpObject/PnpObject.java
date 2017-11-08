@@ -32,7 +32,7 @@ public class PnpObject extends Actor {
         this.name = name;
         //this.texture = new Texture("core/assets/res/object.png");
         this.texture = p.getTexture("core/assets/res/textures/object.png");
-        this.objectType = "object";
+        //this.objectType = "object";
     }
 
     public void setName(String name) {
@@ -43,12 +43,16 @@ public class PnpObject extends Actor {
     public String getObjectType() {
         return this.objectType;
     }
+    public void setObjectType(String type) {
+        this.objectType = type;
+    }
     public String getTeam() {
         return this.team;
     }
     public void setTeam(String team) {
         this.team = team;
     }
+
     public boolean recieveDamage(int attack) {
         this.hp =- attack;
         if (this.hp >= 0) {

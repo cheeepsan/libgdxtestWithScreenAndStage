@@ -22,23 +22,12 @@ public class PnpObjectProvider {
 
     private JsonReader reader;
     private AssetManager assetManager;
-    /*
-    public PnpObject getObject(String objectType) { //FACTORY
-        if (objectType == UNIT) {
-            return new PnpUnit();
-        } else if (objectType == ITEM) {
-            //return new PnpItem();
-        }
 
-        return null;
-    }*/
     public PnpObjectProvider(AssetManager assetManager) {
         this.assetManager = assetManager;
         this.reader = new JsonReader();
     }
     public ArrayList<PnpObject> getObjects(String objectType) {
-
-
         if (objectType == UNIT) {
             return this.getUnits(reader);
         } else if (objectType == ITEM) {
@@ -58,6 +47,7 @@ public class PnpObjectProvider {
             u.setAttack(unit.getInt("attack"));
             u.setName(unit.getString("name"));
             u.setTeam(unit.getString("team"));
+            u.setObjectType("unit");
             u.setTexture(this.assetManager.get(unit.getString("texture"), Texture.class));
             objects.add(u);
         }
