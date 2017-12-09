@@ -4,8 +4,7 @@
 
 This project is built using [libgdx game library](https://libgdx.badlogicgames.com/).
 
-In the "core" folder are found all the main source files. Moreover "assets" folder containing textures and JSON files created for 
-automatic initialisation of external resources. 
+In the "core" folder are found all the main source files. Moreover "assets" folder containing textures and JSON files.
 
 # Assets
 
