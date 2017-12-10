@@ -4,6 +4,22 @@
 
 This project is built using [libgdx game library](https://libgdx.badlogicgames.com/).
 
+This project is built using gaming library, but there is no game. It was written during boring army times and basically is a showcase of my java skills. 
+
+What can be found in this code:
+
+* Distinguished/almost modular classes 
+* Automatic tile loading into memory from JSON files
+* Small map generator
+* Object provider
+* Generic objects
+
+This project can do:
+
+* Draw tiles
+* Move units
+* Nothing else
+
 In the "core" folder are found all the main source files. Moreover "assets" folder containing textures and JSON files.
 
 # Assets
