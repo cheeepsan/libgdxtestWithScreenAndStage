@@ -39,7 +39,7 @@ Tileset used in this project is taken from [Stone Soup](https://github.com/crawl
 
 # Sequence
 
-After main entry point, which is located in file desktop/src/com/mygdx/game/desktop/DesktopLauncher.java, main execution continues
+After the main entry point, which is located in file desktop/src/com/mygdx/game/desktop/DesktopLauncher.java, main execution continues
 in file core/src/com/mygdx/game/MyGdxGame.java. 
 
 ## MyGdxGame.java 
