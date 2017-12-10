@@ -1,6 +1,6 @@
 # libgdxtestWithScreenAndStage
 
-## This is a quick rundown on projects structure. 
+## This is a quick rundown on project structure. 
 
 This project is built using [libgdx game library](https://libgdx.badlogicgames.com/).
 
