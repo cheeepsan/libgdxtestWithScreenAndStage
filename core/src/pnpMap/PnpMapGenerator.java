@@ -1,14 +1,18 @@
 package pnpMap;
 
 import com.badlogic.gdx.math.MathUtils;
+
+
+import linn.core.Linn;
+import linn.core.execute.LinnExecutor;
+import linn.core.execute.state.LinnTurtle;
+import linn.core.lang.LinnBuilder;
+import other.Point;
 import pnpObject.PnpObjectProvider;
 
-import java.awt.*;
+
 import java.nio.channels.Pipe;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 public class PnpMapGenerator {
     private int width, height, centerAmount;
@@ -17,7 +21,8 @@ public class PnpMapGenerator {
     private HashMap<Point, String> centerPoints;
     private ArrayList<Point> rooms;
     private ArrayList<Point> centerPointsList;
-
+    private ArrayList<Point> usedCenterPoints;
+    private LinnExecutor linnExecutor;
 
     private int BIG_ROOM_X = 20;
     private int BIG_ROOM_Y = 20;
@@ -39,26 +44,78 @@ public class PnpMapGenerator {
         this.rooms = new ArrayList<Point>();
         this.centerPoints = new HashMap<Point, String>();
         this.centerPointsList = new ArrayList<Point>();
-        this.generateCenterPoints(100);
+        this.usedCenterPoints = new ArrayList<Point>();
+        this.generateCenterPoints(500);
+
         System.out.println("Generating rooms");
         this.generateRooms(500);
         System.out.println("Fitting rooms");
         this.fitRooms();
+
+//        System.out.println("Carve corridors");
+//        this.carveCorridors();
+
         System.out.println("Filling empty spaces");
         this.fillEmpty();
         System.out.println("Done");
         this.grid.getMap().generated = true;
     }
 
-    protected void generateCenterPoints(int amount) {
+    private void carveCorridors() {
 
+        Collections.sort(this.usedCenterPoints); //sort by x
+        Point prev = null;
+
+        for (int i = 0; i < this.usedCenterPoints.size(); i++) {
+            if (i == 0) {
+                prev = this.usedCenterPoints.get(i);
+                continue;
+            }
+            Point current = this.usedCenterPoints.get(i);
+            while (!current.equals(prev)) {
+                this.grid.addTile(new Point(prev), new PnpTile("grey", this.provider));
+                System.out.println("PREV: " + prev + " " + i);
+                System.out.println("CURRENT : "+ current +  " " + i);
+                if (prev.x == current.x) {
+                    if (prev.y > current.y) {
+                        prev.y--;
+                    } else {
+                        prev.y++;
+                    }
+                } else if (prev.y == current.y) {
+                    if (prev.x > current.x) {
+                        prev.x--;
+                    } else {
+                        prev.x++;
+                    }
+                } else {
+                    if (prev.y > current.y ) {
+                        prev.y--;
+                    } else if (prev.y < current.y ) {
+                        prev.y++;
+                    } else if (prev.x > current.x) {
+                        prev.x--;
+                    } else if (prev.x < current.x) {
+                        prev.x++;
+                    }
+                }
+
+            }
+            prev = current;
+
+        }
+
+    }
+
+    protected void generateCenterPoints(int amount) {
+        ArrayList<String> tileTypes = this.provider.getTileTypes();
         for (int i = 0; i < amount; i++) {
             int x = MathUtils.random(this.width);
             int y = MathUtils.random(this.height);
 
             Point newPoint = new Point(x, y);
 
-            ArrayList<String> tileTypes = this.provider.getTileTypes();
+
 
             int typeNum = MathUtils.random(tileTypes.size() - 1);
             this.centerPoints.put(newPoint, tileTypes.get(typeNum));
@@ -66,36 +123,11 @@ public class PnpMapGenerator {
         }
     }
 
-    protected void fillRandomTiles() {
-        for (int i = 0; i < this.width; i++) {
-            for (int j = 0; j < this.height; j++) {
-                Point point = new Point(i, j); //currentPoint
+    private void corridorVertical(int x, int y, Point center) {
 
-                Point closestPoint = new Point(0, 0);
-                double closestDistance = 0;
-                int k = 0;
+    }
 
-                Iterator<Point> iterator = this.centerPoints.keySet().iterator();
-                while (iterator.hasNext()) {
-                    Point center = iterator.next();
-                    if (k == 0) {
-                        closestDistance = point.distance(center);
-                        closestPoint = center;
-                        //System.out.println(closestDistance);
-                    } else {
-                        double distance = point.distance(center);
-                        if (distance < closestDistance) {
-                            closestDistance = distance;
-                            closestPoint = center;
-
-                        }
-                    }
-
-                    k++;
-                }
-                this.grid.addTile(point, new PnpTile(this.centerPoints.get(closestPoint), this.provider));
-            }
-        }
+    private void corridorHorizontal(int x, int y, Point center) {
 
     }
 
@@ -145,7 +177,8 @@ public class PnpMapGenerator {
 
                 Point room = roomIterator.next();
 
-                roomLoop: //bad practice?
+                roomLoop:
+                //bad practice?
                 for (int i = 0; i < room.x; i++) {
                     for (int j = 0; j < room.y; j++) {
                         Point tile = new Point((center.x + i), (center.y + j));
@@ -167,14 +200,15 @@ public class PnpMapGenerator {
                             Point tile;
                             if (i == (room.x - 1) || j == (room.y - 1) || i == 0 || j == 0) {
 
-                                tile = new Point(center.x +i, center.y + j);
+                                tile = new Point(center.x + i, center.y + j);
                                 this.grid.addTile(tile, new PnpTile("stone", this.provider));
                                 continue;
                             }
-                            tile = new Point((center.x +  i), (center.y + j));
+                            tile = new Point((center.x + i), (center.y + j));
                             this.grid.addTile(tile, new PnpTile("roomWall", this.provider));
                         }
                     }
+                    this.usedCenterPoints.add(center);
                     roomsToDelete.add(room);
                     break;
                 }
@@ -199,7 +233,7 @@ public class PnpMapGenerator {
             }
         }
     }
-
+/*
     private double calculateDistance(Point grid, Point center) {
         return grid.distance(center);
     }
@@ -207,4 +241,100 @@ public class PnpMapGenerator {
     public void checkRadius(Point point) {
 
     }
+
+
+    //Maybe one day
+    protected void generateRoads(ArrayList<Point> road) {
+        int LEN = 10;
+        double ANGLE = 1 / 2.0 * Math.PI;
+        Linn linn = LinnBuilder.newLinn("SierpinskiExample").withAuthor("Thomas Trojer")
+                .withDefaultMoveLength(LEN).withDefaultAngles(ANGLE)
+                // rule: A ---> A + B - A A + A + A A + A B + A A - B + A A - A - A A - A B - A A A
+                .withRule("A").andProduction().F("A").yaw().f("B").negYaw().F("A").F("A").yaw().F("A").yaw().F("A").F("A").yaw().F("A").f("B").yaw().F("A").F("A").negYaw().f("B").yaw().F("A").F("A").negYaw().F("A").negYaw().F("A").F("A").negYaw().F("A").f("B").negYaw().F("A").F("A").F("A").done()
+                // rule: B ---> B B B B B B
+                .withRule("B").andProduction().f("B").f("B").f("B").f("B").f("B").f("B").done()
+                // finalize
+                .build();
+
+        this.linnExecutor = LinnExecutor.newExecutor().useLinn(linn).traceStates(true).onStateChanged(t -> {
+            if (t.hasPreviousState() == false) {
+                // await a second position to draw a line
+                return;
+            }
+            // connect previous and current position with a line
+            LinnTurtle tp = t.getPreviousState();
+            road.add(new Point((int) tp.getX(), (int) tp.getY()));
+
+        }).withAxiom().F("A").yaw().F("A").yaw().F("A").yaw().F("A").done();
+
+        this.linnExecutor.executeAtMost(2);
+    }
+
+    protected void connectRoads(ArrayList<Point> road) {
+        //Minimum spanning tree
+
+        //Prim's algorithm
+        //Kruskal's algorithm
+
+        Point r0;
+        Point r1;
+        int deltaX, deltaY;
+
+        for (int i = 0; i < road.size(); i++) {
+            if (i + i <= road.size()) {
+                r0 = road.get(i);
+                r1 = road.get(i + 1);
+
+                //X
+
+                deltaX = ((int) r0.x - (int) r1.x);
+
+                if (deltaX > 0) {
+                    for (int j = 0; j < deltaX; j++) {
+                        //new Point()
+                    }
+                } else {
+                    deltaX = Math.abs(deltaX);
+                    for (int j = 0; j < deltaX; j++) {
+
+                    }
+                }
+            }
+        }
+
+    }
+
+    protected void fillRandomTiles() {
+        for (int i = 0; i < this.width; i++) {
+            for (int j = 0; j < this.height; j++) {
+                Point point = new Point(i, j); //currentPoint
+
+                Point closestPoint = new Point(0, 0);
+                double closestDistance = 0;
+                int k = 0;
+
+                Iterator<Point> iterator = this.centerPoints.keySet().iterator();
+                while (iterator.hasNext()) {
+                    Point center = iterator.next();
+                    if (k == 0) {
+                        closestDistance = point.distance(center);
+                        closestPoint = center;
+                        //System.out.println(closestDistance);
+                    } else {
+                        double distance = point.distance(center);
+                        if (distance < closestDistance) {
+                            closestDistance = distance;
+                            closestPoint = center;
+
+                        }
+                    }
+
+                    k++;
+                }
+                this.grid.addTile(point, new PnpTile(this.centerPoints.get(closestPoint), this.provider));
+            }
+        }
+
+    }
+*/
 }

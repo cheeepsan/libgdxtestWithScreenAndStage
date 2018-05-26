@@ -19,6 +19,11 @@
       "type": "rect_grey",
       "passable": true,
       "texture": "core/assets/res/textures/rect_gray0.png"
+    },
+    {
+      "type": "grey",
+      "passable": true,
+      "texture": "core/assets/res/textures/grey.png"
     }
   ]
 }

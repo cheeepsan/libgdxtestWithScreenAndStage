@@ -17,10 +17,12 @@ public class GameStage extends Stage {
 
     private GameScreen screen;
     private Game game;
+
     //private Camera camera;
     public GameStage() {
 
     }
+
     public GameStage(Viewport viewport, GameScreen screen, Game game) {
         this.screen = screen;
         this.game = game;
@@ -40,6 +42,7 @@ public class GameStage extends Stage {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return true;
     }
+
     @Override
     public boolean keyDown(int keycode) {
         /*
@@ -59,20 +62,26 @@ public class GameStage extends Stage {
         //System.out.println("input handle");
         return false;
     }
+
     public void addButtonListener(TextButton button) {
 
     }
+
     public void addButtonListenerWithObject(TextButton button, PnpObject object) {
         button.addCaptureListener(new PnpEventListener(object, this));
     }
+
     public void addListeners() {
         Array<Actor> actors = this.getActors();
     }
+
     public void showInventory(PnpObject unit) {
 
     }
 
-    public GameScreen getScreen() {return this.screen;}
+    public GameScreen getScreen() {
+        return this.screen;
+    }
 
 
 }

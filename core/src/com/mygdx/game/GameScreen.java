@@ -10,10 +10,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.VisUI;
 import pnpMap.PnpMap;
 import pnpObject.PnpObject;
 import pnpMap.PnpTile;
@@ -39,8 +45,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public final static float SCALE = 32f;
     public final static float INV_SCALE = 1.f / SCALE;
 
-    public final static float VP_WIDTH = 1280 * INV_SCALE;
-    public final static float VP_HEIGHT = 720 * INV_SCALE;
+    //public final static float VP_WIDTH = 1280 * INV_SCALE;
+    //public final static float VP_HEIGHT = 720 * INV_SCALE;
+    public final static float VP_WIDTH = 1280;
+    public final static float VP_HEIGHT = 720;
 
     public Point globalCoord;
     public Point selectedTilePoint;
@@ -58,7 +66,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public ShapeRenderer shapeRenderer;
 
     public EpMechanics mechanics;
+
     public GameScreen(MyGdxGame game) {
+
         this.game = game;
         this.camera = new OrthographicCamera();
         this.assetManager = game.assetManager;
@@ -176,8 +186,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
                 if ((screenY + 64 > screenHeight) && screenX - 64 < 0) { //leftBottom
                     this.camera.position.set(Gdx.graphics.getWidth() - screenX - 64, screenY - 64, 0);
-                } else if (screenX - 64 < 0 ||  (screenY - 64 < 0 && screenX - 64 < 0)) { //LeftTop || left
-                    this.camera.position.set( Gdx.graphics.getWidth() - screenX - 64, screenY + 64, 0);
+                } else if (screenX - 64 < 0 || (screenY - 64 < 0 && screenX - 64 < 0)) { //LeftTop || left
+                    this.camera.position.set(Gdx.graphics.getWidth() - screenX - 64, screenY + 64, 0);
                 } else if (screenY - 64 < 0 && screenX + 64 > screenWidht) { //rightTop
                     this.camera.position.set(Gdx.graphics.getWidth() - screenX + 64, screenY + 64, 0);
                 } else if ((screenY + 64 > screenHeight) && (screenX + 64 > screenWidht)) { //rightBottom
@@ -254,7 +264,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         if (Gdx.input.isKeyPressed(Input.Keys.I)) {
             if (this.seleectedPnpObject != null)
                 System.out.println(this.seleectedPnpObject.getObjectType());
-                this.invokeInventory((PnpUnit)this.seleectedPnpObject);
+            this.invokeInventory((PnpUnit) this.seleectedPnpObject);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -296,19 +306,46 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         //System.out.println("input handle");
         return false;
     }
+
     public void invokeInventory(PnpUnit unit) {
         System.out.println(unit.getAttack());
         uiWindow = new Window("Inventory screen", this.skin);
+        uiWindow.setSize(400, 400);
+        //Button closeButton = new TextButton("X", this.skin, "default");
+        //uiWindow.getTitleTable().add(closeButton).padRight(-30).padTop(-20);
+
         uiWindow.setVisible(true);
+
+        Table uiTable = new Table(this.skin);
         List equipment = new List(this.skin);
         List inventory = new List(this.skin);
 
-        SplitPane invPane = new SplitPane(equipment, inventory, true, this.skin);
-        uiWindow.addActor(invPane);
+        SplitPane invPane = new SplitPane(equipment, inventory, false, this.skin);
+//        invPane.setFillParent(true);
+
+
+        Array a = new Array();
+        Label label = new Label("TEST", this.skin);
+        a.add(label);
+        a.add(label);
+        a.add(label);
+        a.add(label);
+        a.add(label);
+        a.add(label);
+        a.add(label);
+        equipment.setItems(a);
+
+        TextButton close = new TextButton("close", this.skin);
+
+        uiTable.add(invPane);
+        uiTable.add(close);
+
+        uiWindow.addActor(uiTable);
         this.stage.addActor(uiWindow);
         Gdx.input.setInputProcessor(this.stage);
 
     }
+
     @Override
     public void resize(int width, int height) {
         // viewport must be updated for it to work properly

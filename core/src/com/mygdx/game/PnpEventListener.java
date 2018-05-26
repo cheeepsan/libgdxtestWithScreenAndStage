@@ -13,8 +13,10 @@ public class PnpEventListener implements EventListener {
         this.object = object;
         this.stage = stage;
     }
+
     @Override
     public boolean handle(Event event) {
+
         String eventType = event.toString(); //IS this ok?
         if (eventType.equals("touchDown")) {
             GameScreen screen = this.stage.getScreen();
