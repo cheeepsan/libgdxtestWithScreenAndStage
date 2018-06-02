@@ -2,14 +2,12 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.listeners.PnpEventListener;
 import pnpObject.PnpObject;
 
 
@@ -27,7 +25,9 @@ public class GameStage extends Stage {
         this.screen = screen;
         this.game = game;
         //this.camera = this.getViewport().getCamera();
+        Gdx.app.log("ads", "Opening layer");
         super.setViewport(viewport);
+
 
     }
 

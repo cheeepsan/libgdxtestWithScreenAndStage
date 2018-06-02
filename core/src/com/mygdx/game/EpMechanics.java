@@ -43,7 +43,7 @@ public class EpMechanics {
                 while (iterator.hasNext()) {
                     PnpObject object = iterator.next();
                     String objectType = object.getObjectType();
-                    if (objectType.equals("unit") && unit.getTeam().equals(object.getTeam())) {
+                    if (unit.getObjectType().equals("unit") && objectType.equals("unit") && unit.getTeam().equals(object.getTeam())) {
                         return true;
                     } else if (objectType.equals("unit") && !unit.getTeam().equals(object.getTeam())) {
                         this.attack((PnpUnit)unit, (PnpUnit)object);

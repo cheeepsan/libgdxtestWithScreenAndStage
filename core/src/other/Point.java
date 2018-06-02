@@ -17,13 +17,6 @@ public class Point extends java.awt.Point implements Comparable<java.awt.Point> 
     @Override
     public int compareTo(java.awt.Point other) {
         return Integer.compare(this.x, other.x);
-//        int y = Integer.compare(this.y, other.y);
-//        if (x == 1 && y == 1) {
-//            return 1;
-//        } else if (x == 0 || y == 0){
-//            return 0;
-//        }
-//
-//        return -1;
+
     }
 }

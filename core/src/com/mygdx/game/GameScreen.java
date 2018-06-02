@@ -1,25 +1,16 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.kotcrab.vis.ui.VisUI;
+import com.mygdx.game.listeners.PnpEventListener;
 import pnpMap.PnpMap;
 import pnpObject.PnpObject;
 import pnpMap.PnpTile;
@@ -37,7 +28,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private Window uiWindow;
     private AssetManager assetManager;
     private PnpObjectProvider provider;
-
+    private InputMultiplexer multiplexer;
 
     private OrthographicCamera camera;
     private ScreenViewport viewport;
@@ -74,6 +65,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.assetManager = game.assetManager;
         this.provider = game.provider;
 
+
         this.viewport = new ScreenViewport(this.camera);
 
         this.skin = new Skin(Gdx.files.internal("core/assets/cloud-form/skin/cloud-form-ui.json"));
@@ -99,10 +91,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.shapeRenderer = new ShapeRenderer();
 
         this.mechanics = new EpMechanics(this.game, this, this.stage, this.map);
-        Gdx.input.setInputProcessor(this);
 
-
-
+        this.multiplexer = new InputMultiplexer(this.stage, this); //sequence is important.
+        Gdx.input.setInputProcessor(this.multiplexer);
 
     }
 
@@ -167,7 +158,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        //System.out.println("clicked");
+        System.out.println("clicked");
         int screenWidht = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
         int iScreenY = screenHeight - screenY;
@@ -209,7 +200,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
                         this.uiTable.add(btn).width(100).padTop(0).uniform();
                         this.uiTable.row();
-                        Gdx.input.setInputProcessor(this.stage);
+//                        Gdx.input.setInputProcessor(this.stage);
+                        if (!this.multiplexer.getProcessors().contains(this.stage, false)) {
+                            System.out.println("Doesn't conatin");
+                            this.multiplexer.addProcessor(this.stage);
+                        } else {
+                            this.multiplexer.getProcessors().forEach(inputProcessor -> {
+                                System.out.println(inputProcessor);
+                            });
+                        }
+
                     }
                 }
 
@@ -242,6 +242,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     public void resetUiTable() {
         this.uiTable.reset();
+    }
+    public void closeUiWindow() {
+        this.uiWindow.remove();
     }
 
     @Override
@@ -308,42 +311,34 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     }
 
     public void invokeInventory(PnpUnit unit) {
-        System.out.println(unit.getAttack());
+//        System.out.println(unit.getAttack());
         uiWindow = new Window("Inventory screen", this.skin);
         uiWindow.setSize(400, 400);
-        //Button closeButton = new TextButton("X", this.skin, "default");
-        //uiWindow.getTitleTable().add(closeButton).padRight(-30).padTop(-20);
+
+        Table uiTable = new Table();
+        TextButton closeButton = new TextButton("Close", this.skin);
+        closeButton.addListener(new PnpEventListener(uiWindow, this.stage));
+        uiTable.add(closeButton);
+        uiWindow.add(uiTable);
 
         uiWindow.setVisible(true);
-
-        Table uiTable = new Table(this.skin);
-        List equipment = new List(this.skin);
-        List inventory = new List(this.skin);
-
-        SplitPane invPane = new SplitPane(equipment, inventory, false, this.skin);
-//        invPane.setFillParent(true);
-
-
-        Array a = new Array();
-        Label label = new Label("TEST", this.skin);
-        a.add(label);
-        a.add(label);
-        a.add(label);
-        a.add(label);
-        a.add(label);
-        a.add(label);
-        a.add(label);
-        equipment.setItems(a);
-
-        TextButton close = new TextButton("close", this.skin);
-
-        uiTable.add(invPane);
-        uiTable.add(close);
-
-        uiWindow.addActor(uiTable);
         this.stage.addActor(uiWindow);
-        Gdx.input.setInputProcessor(this.stage);
+        if (!this.multiplexer.getProcessors().contains(this.stage, false)) {
+            this.multiplexer.addProcessor(this.stage);
+        }
 
+        this.multiplexer.getProcessors().forEach(inputProcessor -> {
+            System.out.println(inputProcessor);
+        });
+
+//        this.multiplexer.getProcessors().;
+//        multiplexer.addProcessor(this);
+//        Gdx.input.setInputProcessor(multiplexer);
+
+    }
+
+    public InputMultiplexer getMultiplexer() {
+        return this.multiplexer;
     }
 
     @Override
