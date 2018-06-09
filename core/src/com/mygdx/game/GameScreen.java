@@ -2,20 +2,25 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.listeners.PnpEventListener;
+import javafx.scene.control.Tab;
 import pnpMap.PnpMap;
-import pnpObject.PnpObject;
+import pnpObject.*;
 import pnpMap.PnpTile;
-import pnpObject.PnpObjectProvider;
-import pnpObject.PnpUnit;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -243,8 +248,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public void resetUiTable() {
         this.uiTable.reset();
     }
+
     public void closeUiWindow() {
         this.uiWindow.remove();
+        this.uiWindow = null;
     }
 
     @Override
@@ -311,17 +318,47 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     }
 
     public void invokeInventory(PnpUnit unit) {
-//        System.out.println(unit.getAttack());
+
         uiWindow = new Window("Inventory screen", this.skin);
         uiWindow.setSize(400, 400);
-
-        Table uiTable = new Table();
-        TextButton closeButton = new TextButton("Close", this.skin);
+        //closing button
+        TextButton closeButton = new TextButton("x", this.skin);
+        closeButton.setColor(Color.RED);
         closeButton.addListener(new PnpEventListener(uiWindow, this.stage));
-        uiTable.add(closeButton);
-        uiWindow.add(uiTable);
+        uiWindow.getTitleTable().add(closeButton);
 
+        Table equipmentTable = new Table(this.skin);
+        equipmentTable.setWidth(200);
+        Table inventoryTable = new Table(this.skin);
+        inventoryTable.setWidth(200);
+
+        for (int i = 0; i < unit.getEquipment().size(); i++) {
+            CharSequence slot = PnpUnitSlot.getSlotName(i);
+            equipmentTable.add(new Label(slot,  this.skin));
+
+
+            PnpItem item = unit.getEquipment().get(i);
+            if (item == null) {
+                CharSequence label = "Empty";
+                equipmentTable.add(new Label(label,  this.skin));
+            } else {
+                CharSequence label = item.name;
+                equipmentTable.add(new Label(label,  this.skin));
+            }
+            equipmentTable.row();
+
+        }
+        List inventoryList = new List<>(this.skin);
+        inventoryList.setFillParent(true);
+
+        inventoryList.setItems(unit.getInventory());
+        inventoryTable.add(inventoryList);
+
+        SplitPane splitPane = new SplitPane(equipmentTable, inventoryTable, false, this.skin);
+        
+        uiWindow.add(splitPane);
         uiWindow.setVisible(true);
+
         this.stage.addActor(uiWindow);
         if (!this.multiplexer.getProcessors().contains(this.stage, false)) {
             this.multiplexer.addProcessor(this.stage);
@@ -330,10 +367,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.multiplexer.getProcessors().forEach(inputProcessor -> {
             System.out.println(inputProcessor);
         });
-
-//        this.multiplexer.getProcessors().;
-//        multiplexer.addProcessor(this);
-//        Gdx.input.setInputProcessor(multiplexer);
 
     }
 
