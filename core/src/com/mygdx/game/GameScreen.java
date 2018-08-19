@@ -319,7 +319,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     }
 
     public void invokeInventory(PnpUnit unit) {
+
         PnpJFrame w = new PnpJFrame(unit);
+
         w.setVisible(true);
 //        uiWindow = new Window("Inventory screen", this.skin);
 //        uiWindow.setSize(400, 400);
