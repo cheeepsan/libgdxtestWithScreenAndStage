@@ -21,6 +21,7 @@ import javafx.scene.control.Tab;
 import pnpMap.PnpMap;
 import pnpObject.*;
 import pnpMap.PnpTile;
+import ui.PnpJFrame;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -318,55 +319,56 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     }
 
     public void invokeInventory(PnpUnit unit) {
-
-        uiWindow = new Window("Inventory screen", this.skin);
-        uiWindow.setSize(400, 400);
-        //closing button
-        TextButton closeButton = new TextButton("x", this.skin);
-        closeButton.setColor(Color.RED);
-        closeButton.addListener(new PnpEventListener(uiWindow, this.stage));
-        uiWindow.getTitleTable().add(closeButton);
-
-        Table equipmentTable = new Table(this.skin);
-        equipmentTable.setWidth(200);
-        Table inventoryTable = new Table(this.skin);
-        inventoryTable.setWidth(200);
-
-        for (int i = 0; i < unit.getEquipment().size(); i++) {
-            CharSequence slot = PnpUnitSlot.getSlotName(i);
-            equipmentTable.add(new Label(slot,  this.skin));
-
-
-            PnpItem item = unit.getEquipment().get(i);
-            if (item == null) {
-                CharSequence label = "Empty";
-                equipmentTable.add(new Label(label,  this.skin));
-            } else {
-                CharSequence label = item.name;
-                equipmentTable.add(new Label(label,  this.skin));
-            }
-            equipmentTable.row();
-
-        }
-        List inventoryList = new List<>(this.skin);
-        inventoryList.setFillParent(true);
-
-        inventoryList.setItems(unit.getInventory());
-        inventoryTable.add(inventoryList);
-
-        SplitPane splitPane = new SplitPane(equipmentTable, inventoryTable, false, this.skin);
-        
-        uiWindow.add(splitPane);
-        uiWindow.setVisible(true);
-
-        this.stage.addActor(uiWindow);
-        if (!this.multiplexer.getProcessors().contains(this.stage, false)) {
-            this.multiplexer.addProcessor(this.stage);
-        }
-
-        this.multiplexer.getProcessors().forEach(inputProcessor -> {
-            System.out.println(inputProcessor);
-        });
+        PnpJFrame w = new PnpJFrame(unit);
+        w.setVisible(true);
+//        uiWindow = new Window("Inventory screen", this.skin);
+//        uiWindow.setSize(400, 400);
+//        //closing button
+//        TextButton closeButton = new TextButton("x", this.skin);
+//        closeButton.setColor(Color.RED);
+//        closeButton.addListener(new PnpEventListener(uiWindow, this.stage));
+//        uiWindow.getTitleTable().add(closeButton);
+//
+//        Table equipmentTable = new Table(this.skin);
+//        equipmentTable.setWidth(200);
+//        Table inventoryTable = new Table(this.skin);
+//        inventoryTable.setWidth(200);
+//
+//        for (int i = 0; i < unit.getEquipment().size(); i++) {
+//            CharSequence slot = PnpUnitSlot.getSlotName(i);
+//            equipmentTable.add(new Label(slot,  this.skin));
+//
+//
+//            PnpItem item = unit.getEquipment().get(i);
+//            if (item == null) {
+//                CharSequence label = "Empty";
+//                equipmentTable.add(new Label(label,  this.skin));
+//            } else {
+//                CharSequence label = item.name;
+//                equipmentTable.add(new Label(label,  this.skin));
+//            }
+//            equipmentTable.row();
+//
+//        }
+//        List inventoryList = new List<>(this.skin);
+//        inventoryList.setFillParent(true);
+//
+//        inventoryList.setItems(unit.getInventory());
+//        inventoryTable.add(inventoryList);
+//
+//        SplitPane splitPane = new SplitPane(equipmentTable, inventoryTable, false, this.skin);
+//
+//        uiWindow.add(splitPane);
+//        uiWindow.setVisible(true);
+//
+//        this.stage.addActor(uiWindow);
+//        if (!this.multiplexer.getProcessors().contains(this.stage, false)) {
+//            this.multiplexer.addProcessor(this.stage);
+//        }
+//
+//        this.multiplexer.getProcessors().forEach(inputProcessor -> {
+//            System.out.println(inputProcessor);
+//        });
 
     }
 

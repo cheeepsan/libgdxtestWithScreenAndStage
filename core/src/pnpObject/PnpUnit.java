@@ -28,15 +28,15 @@ public class PnpUnit extends PnpObject {
         PnpItem item1 = new PnpItem();
         item1.setName("Item1");
         PnpItem item2 = new PnpItem();
-        item1.setName("Item2");
+        item2.setName("Item2");
         PnpItem item3 = new PnpItem();
-        item1.setName("Item3");
+        item3.setName("Item3");
         PnpItem item4 = new PnpItem();
-        item1.setName("Item3");
+        item4.setName("Item3");
         PnpItem item5 = new PnpItem();
-        item1.setName("Item3");
+        item5.setName("Item3");
         PnpItem item6 = new PnpItem();
-        item1.setName("Item3");
+        item6.setName("Item3");
 
         this.inventory.add(item1);
         this.inventory.add(item2);
