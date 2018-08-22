@@ -31,7 +31,7 @@ public class PnpObjectProvider {
         if (objectType == UNIT) {
             return this.getUnits(reader);
         } else if (objectType == ITEM) {
-
+            return this.getItems(reader);
         } else if (objectType == TILE) {
 
         }
@@ -50,6 +50,21 @@ public class PnpObjectProvider {
             u.setObjectType("unit");
             u.setTexture(this.assetManager.get(unit.getString("texture"), Texture.class));
             objects.add(u);
+        }
+        return objects;
+    }
+    private ArrayList<PnpObject> getItems(JsonReader reader) {
+        JsonValue value = reader.parse(Gdx.files.internal(this.itemsPath));
+        ArrayList<PnpObject> objects = new ArrayList<PnpObject>();
+        for (JsonValue items : value.get("items")) {
+            items.get("item").forEach(item -> {
+                PnpItem i = new PnpItem();
+
+            });
+
+            items.get("equipment").forEach(eq -> {
+
+            });
         }
         return objects;
     }

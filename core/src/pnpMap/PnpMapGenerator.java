@@ -2,11 +2,6 @@ package pnpMap;
 
 import com.badlogic.gdx.math.MathUtils;
 
-
-import linn.core.Linn;
-import linn.core.execute.LinnExecutor;
-import linn.core.execute.state.LinnTurtle;
-import linn.core.lang.LinnBuilder;
 import other.Point;
 import pnpObject.PnpObjectProvider;
 
@@ -22,7 +17,6 @@ public class PnpMapGenerator {
     private ArrayList<Point> rooms;
     private ArrayList<Point> centerPointsList;
     private ArrayList<Point> usedCenterPoints;
-    private LinnExecutor linnExecutor;
 
     private int BIG_ROOM_X = 20;
     private int BIG_ROOM_Y = 20;

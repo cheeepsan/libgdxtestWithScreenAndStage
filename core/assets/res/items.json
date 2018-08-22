@@ -1,8 +1,71 @@
 {
   "items": {
     "item": [
-      { "name": "item" },
-      { "name": "item1" }
+      {
+        "name": "item",
+        "description": ""
+      },
+      {
+        "name": "item1",
+        "description": ""
+      },
+      {
+        "name": "item2",
+        "description": ""
+      },
+      {
+        "name": "item3",
+        "description": ""
+      },
+      {
+        "name": "item4",
+        "description": ""
+      },
+      {
+        "name": "item5",
+        "description": ""
+      },
+      {
+        "name": "item6",
+        "description": ""
+      }
+    ],
+    "equipment": [
+      {
+        "name": "helm",
+        "description": "",
+        "slot": 0
+      },
+      {
+        "name": "shoulder",
+        "description": "",
+        "slot": 1
+      },
+      {
+        "name": "chest",
+        "description": "",
+        "slot": 2
+      },
+      {
+        "name": "right hand",
+        "description": "",
+        "slot": 3
+      },
+      {
+        "name": "left hand",
+        "description": "",
+        "slot": 4
+      },
+      {
+        "name": "legs",
+        "description": "",
+        "slot": 5
+      },
+      {
+        "name": "feet",
+        "description": "",
+        "slot": 6
+      }
     ]
   }
 }
