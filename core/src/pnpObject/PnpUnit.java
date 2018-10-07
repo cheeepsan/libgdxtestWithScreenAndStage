@@ -1,29 +1,24 @@
 package pnpObject;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.Array;
+import pnpObject.pnpTypes.ObjectType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class PnpUnit extends PnpObject {
 
     private Map<PnpUnitSlot, PnpItem> equipment;
-    private Array<PnpItem> inventory;
+    private ArrayList<PnpItem> inventory;
 
     public PnpUnit() {this.init();}
-    public PnpUnit(int hp, int attack) {
-        super.hp = hp;
-        super.attack = attack;
-        super.objectType = "unit";
-        this.init();
-        //create slots for head, hands, body and legs
-    }
+
     private void init() {
-        this.equipment = new HashMap();
-        this.inventory = new Array<>();
+        super.objectType = ObjectType.UNIT;
+        this.equipment = new LinkedHashMap<> ();
+        this.inventory = new ArrayList<>();
 
 
         for (int i = 0; i < 7; i++)  //where 0 = head, 6 = feet. Check PnpUnitSlot
@@ -43,7 +38,7 @@ public class PnpUnit extends PnpObject {
         super.texture = texture;
     }
 
-    public Array<PnpItem> getInventory() {
+    public ArrayList<PnpItem> getInventory() {
         return inventory;
     }
 

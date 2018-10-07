@@ -1,6 +1,8 @@
 package pnpObject;
 
 
+import pnpObject.pnpTypes.SlotType;
+
 /*
 0 head
 1 shoulders
@@ -9,30 +11,49 @@ package pnpObject;
 4 left hand
 5 legs
 6 feet
-
-
-
  */
 public class PnpUnitSlot {
 
-    public int type;
-    public PnpUnitSlot(int type){}
+    public SlotType type;
+    public PnpUnitSlot(int type){
+        try {
+            this.type = SlotType.values()[type];
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("No such slot");
+        }
+    }
+    public PnpUnitSlot(SlotType type){
+       this.type = type;
+    }
 
-    public static String getSlotName(int type) {
+    public void setSlotType(SlotType type) {
+        this.type = type;
+    }
+    public void setSlotType(int type) {
+        try {
+            this.type = SlotType.values()[type];
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("No such slot");
+        } finally {
+            this.type = null;
+        }
+    }
+
+    public static String getSlotName(SlotType type) {
         switch (type){
-            case 0:
+            case HEAD:
                 return "Head";
-            case 1:
+            case SHOULDERS:
                 return "Shoulders";
-            case 2:
+            case CHEST:
                 return "Chest";
-            case 3:
+            case RIGHT_HAND:
                 return "Right hand";
-            case 4:
+            case LEFT_HAND:
                 return "Left hand";
-            case 5:
+            case LEGS:
                 return "Legs";
-            case 6:
+            case FEET:
                 return "Feet";
             default:
                 throw new RuntimeException("Error, wrong slot");

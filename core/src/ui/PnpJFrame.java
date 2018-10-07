@@ -1,17 +1,17 @@
 package ui;
 
 
-import com.badlogic.gdx.utils.Array;
-import pnpObject.PnpItem;
-import pnpObject.PnpObject;
-import pnpObject.PnpUnit;
+import pnpObject.*;
+import pnpObject.pnpTypes.ItemType;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PnpJFrame extends javax.swing.JFrame {
 
@@ -36,15 +36,18 @@ public class PnpJFrame extends javax.swing.JFrame {
 
     protected void populateGUI() {
         switch (this.currentObject.getObjectType()) {
-            case "unit":
+            case UNIT:
                 PnpUnit unit = (PnpUnit) this.currentObject;
                 JList<JButton> eq = this.populateEquipment(unit);
                 JList<JButton> inv = this.populateInventory(unit);
+                JTable eqTable = this.getEquipmentTable(unit);
 
                 eq.setFixedCellWidth(this.equipmentSplitPane.getDividerLocation());
                 inv.setFixedCellWidth(this.inventorySplitPane.getDividerLocation());
+
                 this.equipmentLeftPanel.add(eq);
                 this.inventoryLeftPanel.add(inv);
+                this.equipmentRightPanel.add(eqTable);
 
 
                 break;
@@ -107,16 +110,39 @@ public class PnpJFrame extends javax.swing.JFrame {
             }
         });
 
-        Array<PnpItem> itemList = unit.getInventory();
+        ArrayList<PnpItem> itemList = unit.getInventory().stream().filter(eq -> eq.getItemType() == ItemType.EQUIPMENT).collect(Collectors.toCollection(ArrayList::new));
 
         for (PnpItem i : itemList) {
             System.out.println("Adding: " + i.name);
             JButton button = new JButton(i.name);
             button.addActionListener(new PnpInventoryButtonListener(this, i));
             model.addElement(button);
+//            unit.getEquipment().put(new PnpUnitSlot(1), )
         }
 
         return list;
+    }
+
+    public JTable getEquipmentTable(PnpUnit unit) {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn(new Object[]{"Slotname"});
+        model.addColumn(new Object[]{"Slotdata"});
+        JTable table = new JTable(model);
+
+        Map<PnpUnitSlot, PnpItem> eqMap = unit.getEquipment();
+
+        eqMap.forEach((name, slot) -> {
+            String slotValue = "EMPTY";
+            if ( slot != null && slot.name != null) {
+                slotValue = slot.name;
+            }
+            model.addRow(new Object[]{
+                    PnpUnitSlot.getSlotName(name.type),
+                    slotValue
+            });
+        });
+
+        return table;
     }
 
     /**
@@ -139,7 +165,7 @@ public class PnpJFrame extends javax.swing.JFrame {
             }
         });
 
-        Array<PnpItem> itemList = unit.getInventory();
+        ArrayList<PnpItem> itemList = unit.getInventory();
 
         for (PnpItem i : itemList) {
             System.out.println("Adding: " + i.name);
@@ -159,9 +185,11 @@ public class PnpJFrame extends javax.swing.JFrame {
 
     public void populateItemView(PnpItem item   ) {
         Label itemLabel = new Label(item.name);
+        Label itemDEscription = new Label(item.description);
 
         this.inventoryRightPanel.removeAll();
         this.inventoryRightPanel.add(itemLabel);
+        this.inventoryRightPanel.add(itemDEscription);
         this.inventoryRightPanel.revalidate();
     }
 

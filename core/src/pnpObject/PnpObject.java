@@ -1,18 +1,18 @@
 package pnpObject;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Json;
+import pnpObject.pnpTypes.ObjectType;
 
 import java.awt.*;
 
 public class PnpObject extends Actor {
     public Texture texture;
     public String name;
+    public String description;
     public Point position;
 
-    protected String objectType;
+    protected ObjectType objectType;
     protected String team = null;
     protected int attack = 0;
     protected int hp = 0;
@@ -24,26 +24,26 @@ public class PnpObject extends Actor {
     public PnpObject(){}
 
     public PnpObject(PnpObjectProvider p) {
-        //this.texture = new Texture("core/assets/res/object.png");
         this.texture = p.getTexture("core/assets/res/textures/object.png");
     }
 
     public PnpObject(String name, PnpObjectProvider p) {
         this.name = name;
-        //this.texture = new Texture("core/assets/res/object.png");
         this.texture = p.getTexture("core/assets/res/textures/object.png");
-        //this.objectType = "object";
     }
 
     public void setName(String name) {
         this.name = name;
-        this.objectType = "object";
     }
 
-    public String getObjectType() {
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ObjectType getObjectType() {
         return this.objectType;
     }
-    public void setObjectType(String type) {
+    public void setObjectType(ObjectType type) {
         this.objectType = type;
     }
     public String getTeam() {

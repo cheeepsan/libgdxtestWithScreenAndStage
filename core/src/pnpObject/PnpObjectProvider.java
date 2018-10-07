@@ -10,6 +10,7 @@ import pnpMap.PnpTile;
 
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class PnpObjectProvider {
     private final String UNIT = "unit";
@@ -47,26 +48,33 @@ public class PnpObjectProvider {
             u.setAttack(unit.getInt("attack"));
             u.setName(unit.getString("name"));
             u.setTeam(unit.getString("team"));
-            u.setObjectType("unit");
             u.setTexture(this.assetManager.get(unit.getString("texture"), Texture.class));
+            ArrayList<PnpItem> item = this.getItems(reader).stream().map(x -> (PnpItem)x).collect(Collectors.toCollection(ArrayList::new));
+            u.getInventory().addAll(item); //TODO: remove all items
             objects.add(u);
         }
         return objects;
     }
+
     private ArrayList<PnpObject> getItems(JsonReader reader) {
         JsonValue value = reader.parse(Gdx.files.internal(this.itemsPath));
-        ArrayList<PnpObject> objects = new ArrayList<PnpObject>();
-        for (JsonValue items : value.get("items")) {
-            items.get("item").forEach(item -> {
-                PnpItem i = new PnpItem();
+        ArrayList<PnpObject> objects = new ArrayList<>();
+            for (JsonValue item : value.get("items").get("item")) {
+                PnpItem i = new PnpWorldItem();
+                objects.add(this.fillItemValues(item, i));
+            }
+            for (JsonValue item : value.get("items").get("equipment")) {
+                PnpItem i = new PnpEquipment();
+                objects.add(this.fillItemValues(item, i));
+            }
 
-            });
-
-            items.get("equipment").forEach(eq -> {
-
-            });
-        }
         return objects;
+    }
+
+    private PnpItem fillItemValues(JsonValue item, PnpItem i){
+        i.setName(item.get("name").asString());
+        i.setDescription(item.get("description").asString());
+        return i;
     }
 
     public ArrayList<String> getTileTypes() {

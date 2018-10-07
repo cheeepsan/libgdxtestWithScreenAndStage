@@ -1,15 +1,23 @@
 package pnpObject;
 
+
+import pnpObject.pnpTypes.ItemType;
+import pnpObject.pnpTypes.ObjectType;
+
 public class PnpItem extends PnpObject {
 
-    private int ITEM = 0;
-    private int EQUIPMENT = 1;
+    protected ItemType type;
 
-    private String type = null;
-    private int itemType = -1;
+    public PnpItem() {
+        super.objectType = ObjectType.ITEM;
+    }
 
-    private String description = null;
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 
-
-    public PnpItem(){}
+    public ItemType getItemType() {
+        return this.type;
+    }
 }

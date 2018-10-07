@@ -2,6 +2,7 @@ package pnpMap;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.JsonValue;
+import pnpObject.pnpTypes.ObjectType;
 import pnpObject.PnpObject;
 import pnpObject.PnpObjectProvider;
 
@@ -26,7 +27,7 @@ public class PnpTile extends PnpObject {
         }
 
         this.objectList = new ArrayList<PnpObject>();
-        super.objectType = "tile";
+        super.objectType = ObjectType.TILE;
     }
 
     public void addObject(PnpObject object) {

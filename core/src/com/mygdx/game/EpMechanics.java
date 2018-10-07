@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import pnpMap.PnpMap;
 import pnpMap.PnpTile;
+import pnpObject.pnpTypes.ObjectType;
 import pnpObject.PnpObject;
 import pnpObject.PnpUnit;
 
@@ -42,10 +43,10 @@ public class EpMechanics {
                 Iterator<PnpObject> iterator = objects.iterator();
                 while (iterator.hasNext()) {
                     PnpObject object = iterator.next();
-                    String objectType = object.getObjectType();
-                    if (unit != null && objectType.equals("unit") && unit.getTeam().equals(object.getTeam())) {
+                    ObjectType objectType = object.getObjectType();
+                    if (unit != null && objectType == ObjectType.UNIT && unit.getTeam().equals(object.getTeam())) {
                         return true;
-                    } else if (unit != null && objectType.equals("unit") && !unit.getTeam().equals(object.getTeam())) {
+                    } else if (unit != null && objectType == ObjectType.UNIT && !unit.getTeam().equals(object.getTeam())) {
                         this.attack((PnpUnit)unit, (PnpUnit)object);
                         return false;
                     }

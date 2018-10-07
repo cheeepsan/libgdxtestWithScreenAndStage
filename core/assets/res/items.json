@@ -32,37 +32,37 @@
     ],
     "equipment": [
       {
-        "name": "helm",
+        "name": "Steel helm",
         "description": "",
         "slot": 0
       },
       {
-        "name": "shoulder",
+        "name": "Steel shoulder",
         "description": "",
         "slot": 1
       },
       {
-        "name": "chest",
+        "name": "Steel chest",
         "description": "",
         "slot": 2
       },
       {
-        "name": "right hand",
-        "description": "",
+        "name": "Steel bracer",
+        "description": "Right hand",
         "slot": 3
       },
       {
-        "name": "left hand",
-        "description": "",
+        "name": "Steel bracer",
+        "description": "Left hand",
         "slot": 4
       },
       {
-        "name": "legs",
+        "name": "Steel leggins",
         "description": "",
         "slot": 5
       },
       {
-        "name": "feet",
+        "name": "Steel sabatons",
         "description": "",
         "slot": 6
       }
