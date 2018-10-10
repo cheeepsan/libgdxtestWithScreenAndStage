@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ public class PnpJFrame extends javax.swing.JFrame {
 
 
     private JSplitPane equipmentSplitPane;
+    private JPanel equipmentContainer;
     private JPanel equipmentLeftPanel;
     private JPanel equipmentRightPanel;
 
@@ -63,6 +65,7 @@ public class PnpJFrame extends javax.swing.JFrame {
 
         tabPane = new JTabbedPane();
         equipmentSplitPane = new JSplitPane();
+        equipmentContainer = new JPanel();
         equipmentLeftPanel = new JPanel();
         equipmentRightPanel = new JPanel();
 
@@ -73,13 +76,14 @@ public class PnpJFrame extends javax.swing.JFrame {
         equipmentSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         equipmentSplitPane.setDividerLocation(300);
         equipmentSplitPane.setTopComponent(equipmentLeftPanel);
-        equipmentSplitPane.setBottomComponent(equipmentRightPanel);
+        equipmentSplitPane.setBottomComponent(equipmentContainer);
 
         inventorySplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         inventorySplitPane.setDividerLocation(300);
         inventorySplitPane.setTopComponent(inventoryLeftPanel);
         inventorySplitPane.setBottomComponent(inventoryRightPanel);
 
+        equipmentContainer.add(equipmentRightPanel);
 
         tabPane.addTab("Equipment", equipmentSplitPane);
         tabPane.addTab("Inventory", inventorySplitPane);
@@ -103,24 +107,24 @@ public class PnpJFrame extends javax.swing.JFrame {
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setCellRenderer(new PnpListCellRenderer());
 
-        list.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent event) {
-                clickButtonAt(event.getPoint(), list);
-            }
-        });
+        list.addMouseListener(new PnpInventoryMouseAdapter(list, unit, this));
 
         ArrayList<PnpItem> itemList = unit.getInventory().stream().filter(eq -> eq.getItemType() == ItemType.EQUIPMENT).collect(Collectors.toCollection(ArrayList::new));
 
         for (PnpItem i : itemList) {
-            System.out.println("Adding: " + i.name);
-            JButton button = new JButton(i.name);
+            JButton button = new PnpInventoryJButton(i);
             button.addActionListener(new PnpInventoryButtonListener(this, i));
             model.addElement(button);
-//            unit.getEquipment().put(new PnpUnitSlot(1), )
         }
 
         return list;
+    }
+
+    public void reloadEquipment(PnpUnit unit) {
+
+        this.equipmentRightPanel.removeAll();
+        this.equipmentRightPanel.add(this.getEquipmentTable(unit));
+        this.equipmentRightPanel.revalidate();
     }
 
     public JTable getEquipmentTable(PnpUnit unit) {
@@ -136,6 +140,7 @@ public class PnpJFrame extends javax.swing.JFrame {
             if ( slot != null && slot.name != null) {
                 slotValue = slot.name;
             }
+            System.out.println("Adding to slot: " + name.type);
             model.addRow(new Object[]{
                     PnpUnitSlot.getSlotName(name.type),
                     slotValue
@@ -158,18 +163,12 @@ public class PnpJFrame extends javax.swing.JFrame {
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setCellRenderer(new PnpListCellRenderer());
 
-        list.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent event) {
-                clickButtonAt(event.getPoint(), list);
-            }
-        });
+        list.addMouseListener(new PnpInventoryMouseAdapter(list, unit, this));
 
         ArrayList<PnpItem> itemList = unit.getInventory();
 
         for (PnpItem i : itemList) {
-            System.out.println("Adding: " + i.name);
-            JButton button = new JButton(i.name);
+            JButton button = new PnpInventoryJButton(i);
             button.addActionListener(new PnpInventoryButtonListener(this, i));
             model.addElement(button);
         }
@@ -177,20 +176,23 @@ public class PnpJFrame extends javax.swing.JFrame {
         return list;
     }
 
-    private void clickButtonAt(Point point, JList list) {
-        int index = list.locationToIndex(point);
-        JButton item = (JButton) list.getModel().getElementAt(index);
-        item.doClick();
-    }
+
 
     public void populateItemView(PnpItem item   ) {
         Label itemLabel = new Label(item.name);
-        Label itemDEscription = new Label(item.description);
+        Label itemDescription = new Label(item.description);
 
         this.inventoryRightPanel.removeAll();
         this.inventoryRightPanel.add(itemLabel);
-        this.inventoryRightPanel.add(itemDEscription);
+        this.inventoryRightPanel.add(itemDescription);
         this.inventoryRightPanel.revalidate();
     }
+
+    /**
+     *
+     *
+     * OTHER
+     *
+     */
 
 }

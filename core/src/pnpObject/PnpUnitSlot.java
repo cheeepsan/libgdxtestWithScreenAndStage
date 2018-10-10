@@ -59,4 +59,18 @@ public class PnpUnitSlot {
                 throw new RuntimeException("Error, wrong slot");
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        System.out.println("comparing");
+        PnpUnitSlot comparable = null;
+        if (o != null) {
+            comparable = (PnpUnitSlot)o;
+        }
+        return this.type == comparable.type;
+    }
+
+    public int hashCode() {
+        return 0;
+    }
 }

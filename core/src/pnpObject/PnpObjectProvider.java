@@ -64,7 +64,7 @@ public class PnpObjectProvider {
                 objects.add(this.fillItemValues(item, i));
             }
             for (JsonValue item : value.get("items").get("equipment")) {
-                PnpItem i = new PnpEquipment();
+                PnpItem i = new PnpEquipment(item.get("slot").asInt());
                 objects.add(this.fillItemValues(item, i));
             }
 
